@@ -41,11 +41,11 @@ public class PlayerEvent {
 		this.player = player;
 	}
 	
-	public Snapshot getTimeStamp() {
+	public Snapshot getSnapshot() {
 		return snapshot;
 	}
 	
-	void setTimeStamp(Snapshot snapshot) {
+	void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
 	

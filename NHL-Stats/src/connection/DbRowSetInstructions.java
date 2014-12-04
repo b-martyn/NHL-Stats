@@ -103,39 +103,41 @@ public class DbRowSetInstructions {
 			if(checkForExistingTable(field.getTable())){
 				switch(field.getType()){
 					case BOOLEAN:
-						if(!(value instanceof Boolean)
-								|| !(comparator == Comparator.EQUAL || comparator == Comparator.NOT_EQUAL)){
-							return;
+						if(!(value instanceof Boolean)){
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
+						}else if(!(comparator == Comparator.EQUAL || comparator == Comparator.NOT_EQUAL)){
+							throw new IllegalArgumentException("Incorrect comparator: " + comparator +  "for Boolean field");
 						}
 						break;
 					case DATE:
 						if(!(value instanceof Date)){
-							return;
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
 						}
 						break;
 					case STRING:
-						if(!(value instanceof java.lang.String)
-								|| !(comparator == Comparator.EQUAL || comparator == Comparator.NOT_EQUAL)){
-							return;
+						if(!(value instanceof java.lang.String)){
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
+						}else if(!(comparator == Comparator.EQUAL || comparator == Comparator.NOT_EQUAL)){
+							throw new IllegalArgumentException("Incorrect comparator: " + comparator +  " for String field");
 						}
 						break;
 					case BYTE:
 						if(!(value instanceof Byte)){
-							return;
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
 						}
 						break;
 					case SHORT:
 						if(!(value instanceof Short)){
-							return;
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
 						}
 						break;
 					case INT:
 						if(!(value instanceof Integer)){
-							return;
+							throw new IllegalArgumentException("Incorrect field type for:" + field + "(" + field.getType() + ")" + " with value:" + value + " as " + value.getClass());
 						}
 						break;
 					default:
-						return;
+						break;
 				}
 			}else{
 				throw new IllegalArgumentException("Missing table:" + field.getTable() + " for " + field);
@@ -165,7 +167,7 @@ public class DbRowSetInstructions {
 		private List<Object> values = new ArrayList<Object>();
 		private List<Boolean> andCriteria = new ArrayList<Boolean>();
 		private List<Boolean> grouping = new ArrayList<Boolean>();
-		private List<Boolean> initialResults = new ArrayList<Boolean>();
+		private List<Boolean> initialResults;
 		private int index = 0;
 		
 		MyPredicate(List<Object[]> criteria){
@@ -185,6 +187,7 @@ public class DbRowSetInstructions {
 			}
 			
 			List<Boolean> finalResults = new ArrayList<Boolean>();
+			initialResults = new ArrayList<Boolean>();
 			for(int i = 0; i < fields.size(); i++){
 				TableField field = fields.get(i);
 				Comparator comparator = comparators.get(i);
@@ -206,16 +209,17 @@ public class DbRowSetInstructions {
 			boolean finalResult = initialResults.get(index);
 			try{
 				while(grouping.get(index)){
-				boolean result = finalResult;
-				if(andCriteria.get(index)){
-					++index;
-					result = (result && groupCriteria());
-				}else{
-					++index;
-					result = (result || groupCriteria());
+					boolean result = finalResult;
+					if(andCriteria.get(index)){
+						++index;
+						result = (result && groupCriteria());
+					}else{
+						++index;
+						result = (result || groupCriteria());
+					}
 				}
-			}
 			}catch(IndexOutOfBoundsException e){
+				// TODO look me over
 				System.out.println(grouping.size());
 			}
 			return finalResult;

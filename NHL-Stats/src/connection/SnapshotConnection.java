@@ -28,12 +28,15 @@ public class SnapshotConnection implements SnapshotConnector {
 	
 	@Override
 	public Snapshot[] getSnapshots() throws SQLException {
-		return convertSnapshots(connection.getResultSet());
+		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.SNAPSHOTS);
+		instructions.addJoiningTable(Table.GAMES, GamesFields.ID, SnapshotsFields.GAMEID);
+		return convertSnapshots(connection.getResultSet(instructions));
 	}
 
 	@Override
 	public Snapshot[] getSnapshots(Game game) throws SQLException {
 		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.SNAPSHOTS);
+		instructions.addJoiningTable(Table.GAMES, GamesFields.ID, SnapshotsFields.GAMEID);
 		instructions.addNewFilterCriteria(SnapshotsFields.GAMEID, Comparator.EQUAL, game.getId());
 		return convertSnapshots(connection.getResultSet(instructions));
 	}
@@ -41,6 +44,7 @@ public class SnapshotConnection implements SnapshotConnector {
 	@Override
 	public Snapshot getSnapshot(int id) throws SQLException {
 		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.SNAPSHOTS);
+		instructions.addJoiningTable(Table.GAMES, GamesFields.ID, SnapshotsFields.GAMEID);
 		instructions.addNewFilterCriteria(SnapshotsFields.ID, Comparator.EQUAL, id);
 		try{
 			return convertSnapshots(connection.getResultSet(instructions))[0];
@@ -51,18 +55,16 @@ public class SnapshotConnection implements SnapshotConnector {
 	
 	private Snapshot[] convertSnapshots(ResultSet resultSet) throws SQLException{
 		List<Snapshot> snapshots = new ArrayList<Snapshot>();
-		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			Game game = GameConnection.getInstance().getGame(resultSet.getInt("gameid"));
-			int gameId = game.getId();
-			byte period = resultSet.getByte("period");
-			short elapsedSeconds = resultSet.getShort("elapsedseconds");
-			short secondsLeft = resultSet.getShort("secondsleft");
+			int id = resultSet.getInt(SnapshotsFields.ID.toString().toLowerCase());
+			int gameId = resultSet.getInt(SnapshotsFields.GAMEID.toString().toLowerCase());
+			byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
+			short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
+			short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
 			TimeStamp timeStamp = new TimeStamp(period, elapsedSeconds, secondsLeft);
-			Player[] homePlayersOnIce = convertPlayers(resultSet.getString("homeplayersonice"), game.getHomeTeam());
-			Player[] awayPlayersOnIce = convertPlayers(resultSet.getString("awayplayersonice"), game.getAwayTeam());
+			Player[] homePlayersOnIce = convertPlayers(resultSet.getString(SnapshotsFields.HOMEPLAYERSONICE.toString().toLowerCase()), TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase())));
+			Player[] awayPlayersOnIce = convertPlayers(resultSet.getString(SnapshotsFields.AWAYPLAYERSONICE.toString().toLowerCase()), TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase())));
 			snapshots.add(new Snapshot(id, gameId, timeStamp, homePlayersOnIce, awayPlayersOnIce));
 		}
 		return snapshots.toArray(new Snapshot[snapshots.size()]);
@@ -75,6 +77,6 @@ public class SnapshotConnection implements SnapshotConnector {
 		for(String id : playerIds){
 			players.add(PlayerConnection.getInstance().getPlayer(Byte.valueOf(id.trim()), teamName));
 		}
-		return null;
+		return players.toArray(new Player[players.size()]);
 	}
 }

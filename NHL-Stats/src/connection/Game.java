@@ -17,6 +17,18 @@ public class Game {
 	private TimeEvent[] timeEvents;
 	private PlayerEvent[] playerEvents;
 	
+	public Game(int id, Date date, TeamName homeTeam, TeamName awayTeam, byte homeScore, byte awayScore, Shot[] shots, TimeEvent[] timeEvents, PlayerEvent[] playerEvents){
+		this.id = id;
+		this.date = date;
+		this.homeTeam = homeTeam;
+		this.awayTeam = awayTeam;
+		this.homeScore = homeScore;
+		this.awayScore = awayScore;
+		this.shots = shots;
+		this.timeEvents = timeEvents;
+		this.playerEvents = playerEvents;
+	}
+	
 	public Game(int id, Date date, TeamName homeTeam, TeamName awayTeam, byte homeScore, byte awayScore){
 		this.id = id;
 		this.date = date;

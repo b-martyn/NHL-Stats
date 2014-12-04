@@ -77,13 +77,24 @@ public class GameConnection implements GameConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			Date date = resultSet.getDate("date");
-			TeamName homeTeam = TeamName.valueOf(resultSet.getString("homeTeam"));
-			TeamName awayTeam = TeamName.valueOf(resultSet.getString("awayTeam"));
-			byte homeScore = resultSet.getByte("homeScore");
-			byte awayScore = resultSet.getByte("awayScore");
-			games.add(new Game(id, date, homeTeam, awayTeam, homeScore, awayScore));
+			int id = resultSet.getInt(GamesFields.ID.toString().toLowerCase());
+			Date date = resultSet.getDate(GamesFields.DATE.toString().toLowerCase());
+			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
+			byte homeScore = resultSet.getByte(GamesFields.HOMESCORE.toString().toLowerCase());
+			byte awayScore = resultSet.getByte(GamesFields.AWAYSCORE.toString().toLowerCase());
+			Game newGame = new Game(id, date, homeTeam, awayTeam, homeScore, awayScore);
+			games.add(newGame);
+		}
+		for(Game game : games){
+			if((game.getHomeScore() != 0) || (game.getAwayScore() != 0)){
+				Shot[] shots = ShotConnection.getInstance().getShots(game);
+				PlayerEvent[] playerEvents = PlayerEventConnection.getInstance().getPlayerEvents(game);
+				TimeEvent[] timeEvents = TimeEventConnection.getInstance().getTimeEvents(game);
+				game.setShots(shots);
+				game.setPlayerEvents(playerEvents);
+				game.setTimeEvents(timeEvents);
+			}
 		}
 		
 		return games.toArray(new Game[games.size()]);

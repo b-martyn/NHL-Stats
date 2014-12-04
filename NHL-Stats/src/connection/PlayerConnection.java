@@ -55,6 +55,7 @@ public class PlayerConnection implements PlayerConnector {
 		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.PLAYERS);
 		instructions.addNewFilterCriteria(PlayersFields.NUMBER, Comparator.EQUAL, number);
 		instructions.addNewConditionCriteria(PlayersFields.TEAM, Comparator.EQUAL, teamName.toString(), true);
+		//System.out.println(convertPlayers(connection.getResultSet(instructions)).length);
 		try{
 			return convertPlayers(connection.getResultSet(instructions))[0];
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -67,12 +68,12 @@ public class PlayerConnection implements PlayerConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			String firstName = resultSet.getString("firstname");
-			String lastName = resultSet.getString("lastname");
-			TeamName team = TeamName.valueOf(resultSet.getString("team"));
-			Position position = Position.valueOf(resultSet.getString("position"));
-			byte number = resultSet.getByte("number");
+			int id = resultSet.getInt(PlayersFields.ID.toString().toLowerCase());
+			String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
+			String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
+			TeamName team = TeamName.valueOf(resultSet.getString(PlayersFields.TEAM.toString().toLowerCase()));
+			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
+			byte number = resultSet.getByte(PlayersFields.NUMBER.toString().toLowerCase());
 			players.add(new Player(id, firstName, lastName, team, position, number));
 		}
 		return players.toArray(new Player[players.size()]);

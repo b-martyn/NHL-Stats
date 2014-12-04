@@ -14,7 +14,7 @@ public class TimeEventConnection implements TimeEventConnector {
 	private static TimeEventConnection instance = new TimeEventConnection();
 	private DbConnector connection;
 	
-	protected TimeEventConnection(){
+	private TimeEventConnection(){
 		try {
 			connection = new DbConnectorFactory().getDbConnector(Table.TIMEEVENTS);
 		} catch (SQLException e) {
@@ -62,10 +62,10 @@ public class TimeEventConnection implements TimeEventConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			boolean starting = resultSet.getBoolean("startingclock");
-			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt("snapshotId"));
-			TimeEventType type = TimeEventType.valueOf(resultSet.getString("timeeventtype"));
+			int id = resultSet.getInt(TimeEventsFields.ID.toString().toLowerCase());
+			boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
+			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt(TimeEventsFields.SNAPSHOTID.toString().toLowerCase()));
+			TimeEventType type = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 			timeEvents.add(new TimeEvent(id, starting, snapshot, type));
 		}
 		return timeEvents.toArray(new TimeEvent[timeEvents.size()]);

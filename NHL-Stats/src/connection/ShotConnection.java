@@ -72,19 +72,19 @@ public class ShotConnection implements ShotConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt("snapshotid"));
-			ShotType shotType = ShotType.valueOf(resultSet.getString("shottype"));
-			byte distance = resultSet.getByte("distance");
-			Player player = PlayerConnection.getInstance().getPlayer(resultSet.getInt("firstplayerid"));
-			Player player2 = PlayerConnection.getInstance().getPlayer(resultSet.getInt("secondplayerid"));
-			Player player3 = PlayerConnection.getInstance().getPlayer(resultSet.getInt("thirdplayerid"));
-			String missedLocationString = resultSet.getString("missedshotlocation");
+			int id = resultSet.getInt(ShotsFields.ID.toString().toLowerCase());
+			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt(ShotsFields.SNAPSHOTID.toString().toLowerCase()));
+			ShotType shotType = ShotType.valueOf(resultSet.getString(ShotsFields.SHOTTYPE.toString().toLowerCase()));
+			byte distance = resultSet.getByte(ShotsFields.DISTANCE.toString().toLowerCase());
+			Player player = PlayerConnection.getInstance().getPlayer(resultSet.getInt(ShotsFields.FIRSTPLAYERID.toString().toLowerCase()));
+			Player player2 = PlayerConnection.getInstance().getPlayer(resultSet.getInt(ShotsFields.SECONDPLAYERID.toString().toLowerCase()));
+			Player player3 = PlayerConnection.getInstance().getPlayer(resultSet.getInt(ShotsFields.THIRDPLAYERID.toString().toLowerCase()));
+			String missedLocationString = resultSet.getString(ShotsFields.MISSEDSHOTLOCATION.toString().toLowerCase());
 			MissedLocation missedLocation = null;
 			if(missedLocationString != null){
 				missedLocation = MissedLocation.valueOf(missedLocationString);
 			}
-			boolean goal = resultSet.getBoolean("goal");
+			boolean goal = resultSet.getBoolean(ShotsFields.GOAL.toString().toLowerCase());
 			if(goal){
 				if(player3 != null){
 					shots.add(new Goal(id, snapshot, player, shotType, distance, player2, player3));

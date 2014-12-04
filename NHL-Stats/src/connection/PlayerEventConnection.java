@@ -7,6 +7,7 @@ import java.util.List;
 
 import connection.DbConnection.Table;
 import connection.DbRowSetInstructions.Comparator;
+import connection.Penalty.Infraction;
 import connection.PlayerEvent.PlayerEventType;
 
 public class PlayerEventConnection implements PlayerEventConnector {
@@ -70,12 +71,18 @@ public class PlayerEventConnection implements PlayerEventConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt("id");
-			Player player = PlayerConnection.getInstance().getPlayer(resultSet.getInt("playerid"));
-			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt("snapshotid"));
-			Zone zone = Zone.valueOf(resultSet.getString("zone"));
-			PlayerEventType type = PlayerEventType.valueOf(resultSet.getString("playereventtype"));
-			playerEvents.add(new PlayerEvent(id, player, snapshot, zone, type));
+			int id = resultSet.getInt(PlayerEventsFields.ID.toString().toLowerCase());
+			Player player = PlayerConnection.getInstance().getPlayer(resultSet.getInt(PlayerEventsFields.PLAYERID.toString().toLowerCase()));
+			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt(PlayerEventsFields.SNAPSHOTID.toString().toLowerCase()));
+			Zone zone = Zone.valueOf(resultSet.getString(PlayerEventsFields.ZONE.toString().toLowerCase()));
+			PlayerEventType type = PlayerEventType.valueOf(resultSet.getString(PlayerEventsFields.PLAYEREVENTTYPE.toString().toLowerCase()));
+			if(type == PlayerEventType.PENALTY_DRAWN || type == PlayerEventType.PENALTY_TAKEN){
+				Infraction infraction = Infraction.valueOf(resultSet.getString(PlayerEventsFields.INFRACTION.toString().toLowerCase()));
+				byte minutes = resultSet.getByte(PlayerEventsFields.MINUTES.toString().toLowerCase());
+				playerEvents.add(new Penalty(id, player, snapshot, zone, type, infraction, minutes));
+			}else{
+				playerEvents.add(new PlayerEvent(id, player, snapshot, zone, type));
+			}
 		}
 		return playerEvents.toArray(new PlayerEvent[playerEvents.size()]);
 	}
