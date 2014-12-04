@@ -6,4 +6,4 @@ Accumulation of NHL data regarding players and games in the NHL collected from w
 
 Dependencies:
   
-  MySQL Connector/J 5.1.33
+    MySQL Connector/J 5.1.33
