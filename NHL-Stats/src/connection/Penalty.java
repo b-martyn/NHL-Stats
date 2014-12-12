@@ -18,12 +18,18 @@ public class Penalty extends PlayerEvent {
 	public Penalty(Player player, Snapshot snapshot, Zone zone, PlayerEventType type, Infraction infraction, short minutes) {
 		this(0, player, snapshot, zone, type, infraction, minutes);
 	}
-		
+	
+	public Penalty(){
+		super();
+		this.infraction = null;
+		this.minutes = 0;
+	}
+	
 	public Infraction getInfraction() {
 		return infraction;
 	}
 	
-	void setInfraction(Infraction infraction) {
+	public void setInfraction(Infraction infraction) {
 		this.infraction = infraction;
 	}
 	
@@ -31,7 +37,7 @@ public class Penalty extends PlayerEvent {
 		return minutes;
 	}
 	
-	void setMinutes(short minutes) {
+	public void setMinutes(short minutes) {
 		this.minutes = minutes;
 	}
 

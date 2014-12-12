@@ -23,6 +23,10 @@ public class TimeEvent {
 		this(0, starting, snapshot, type);
 	}
 	
+	public TimeEvent(){
+		this(0, false, new Snapshot(), null);
+	}
+	
 	public int getId() {
 		return id;
 	}

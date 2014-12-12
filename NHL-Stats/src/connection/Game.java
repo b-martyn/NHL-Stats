@@ -38,15 +38,19 @@ public class Game {
 		this.awayScore = awayScore;
 	}
 	
-	public Game(Date date, TeamName homeTeam, TeamName awayTeam){
-		this(0, date, homeTeam, awayTeam, (byte)0, (byte)0);
+	public Game(Date date, TeamName homeTeam, TeamName awayTeam, byte homeScore, byte awayScore){
+		this(0, date, homeTeam, awayTeam, homeScore, awayScore);
+	}
+	
+	public Game(){
+		this(0, new Date(), null, null, (byte)0, (byte)0);
 	}
 	
 	public int getId() {
 		return id;
 	}
 	
-	void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -54,7 +58,7 @@ public class Game {
 		return date;
 	}
 
-	void setDate(Date date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
@@ -62,7 +66,7 @@ public class Game {
 		return homeTeam;
 	}
 	
-	void setHomeTeam(TeamName homeTeam) {
+	public void setHomeTeam(TeamName homeTeam) {
 		this.homeTeam = homeTeam;
 	}
 	
@@ -70,7 +74,7 @@ public class Game {
 		return awayTeam;
 	}
 	
-	void setAwayTeam(TeamName awayTeam) {
+	public void setAwayTeam(TeamName awayTeam) {
 		this.awayTeam = awayTeam;
 	}
 	
@@ -78,7 +82,7 @@ public class Game {
 		return homeScore;
 	}
 	
-	void setHomeScore(byte homeScore) {
+	public void setHomeScore(byte homeScore) {
 		this.homeScore = homeScore;
 	}
 	
@@ -86,7 +90,7 @@ public class Game {
 		return awayScore;
 	}
 	
-	void setAwayScore(byte awayScore) {
+	public void setAwayScore(byte awayScore) {
 		this.awayScore = awayScore;
 	}
 	
@@ -94,7 +98,7 @@ public class Game {
 		return shots;
 	}
 	
-	void setShots(Shot[] shots) {
+	public void setShots(Shot[] shots) {
 		this.shots = shots;
 	}
 	
@@ -102,7 +106,7 @@ public class Game {
 		return timeEvents;
 	}
 	
-	void setTimeEvents(TimeEvent[] timeEvents) {
+	public void setTimeEvents(TimeEvent[] timeEvents) {
 		this.timeEvents = timeEvents;
 	}
 	
@@ -110,7 +114,7 @@ public class Game {
 		return playerEvents;
 	}
 	
-	void setPlayerEvents(PlayerEvent[] playerEvents) {
+	public void setPlayerEvents(PlayerEvent[] playerEvents) {
 		this.playerEvents = playerEvents;
 	}
 

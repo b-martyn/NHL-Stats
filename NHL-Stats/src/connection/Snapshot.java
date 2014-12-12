@@ -26,7 +26,7 @@ public class Snapshot {
 		return id;
 	}
 	
-	void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -34,7 +34,7 @@ public class Snapshot {
 		return gameId;
 	}
 	
-	void setGame(int gameId) {
+	public void setGame(int gameId) {
 		this.gameId = gameId;
 	}
 	
@@ -42,7 +42,7 @@ public class Snapshot {
 		return timeStamp;
 	}
 	
-	void setTimeStamp(TimeStamp timeStamp) {
+	public void setTimeStamp(TimeStamp timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 	

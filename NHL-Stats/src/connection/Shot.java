@@ -32,7 +32,7 @@ public class Shot {
 		return id;
 	}
 	
-	void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -40,7 +40,7 @@ public class Shot {
 		return snapshot;
 	}
 	
-	void setSnapshot(Snapshot snapshot) {
+	public void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
 	
@@ -48,7 +48,7 @@ public class Shot {
 		return player;
 	}
 	
-	void setPlayer(Player player) {
+	public void setPlayer(Player player) {
 		this.player = player;
 	}
 	
@@ -56,7 +56,7 @@ public class Shot {
 		return shotType;
 	}
 	
-	void setShotType(ShotType shotType) {
+	public void setShotType(ShotType shotType) {
 		this.shotType = shotType;
 	}
 	
@@ -64,7 +64,7 @@ public class Shot {
 		return distanceOut;
 	}
 	
-	void setDistanceOut(byte distanceOut) {
+	public void setDistanceOut(byte distanceOut) {
 		this.distanceOut = distanceOut;
 	}
 

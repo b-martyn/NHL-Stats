@@ -76,7 +76,7 @@ public class SnapshotConnection implements SnapshotConnector {
 	private Snapshot[] convertSnapshots(ResultSet resultSet) throws SQLException{
 		List<Snapshot> snapshots = new ArrayList<Snapshot>();
 		Snapshot snapshot = new Snapshot();
-		int snapshotId = 0;
+		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			//Always more snapshotPlayers than any other field
@@ -87,7 +87,7 @@ public class SnapshotConnection implements SnapshotConnector {
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
 			
-			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == snapshotId){
+			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == snapshot.getId()){
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}else{
@@ -98,7 +98,7 @@ public class SnapshotConnection implements SnapshotConnector {
 					snapshots.add(snapshot);
 				}
 				
-				snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
+				int snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
 				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());

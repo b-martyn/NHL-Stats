@@ -22,7 +22,7 @@ public class ShootoutShot extends Shot {
 		return goal;
 	}
 	
-	void setGoal(boolean goal) {
+	public void setGoal(boolean goal) {
 		this.goal = goal;
 	}
 

@@ -85,8 +85,7 @@ public class TimeEventConnection implements TimeEventConnector {
 	
 	private TimeEvent[] convertTimeEvents(ResultSet resultSet) throws SQLException{
 		List<TimeEvent> timeEvents = new ArrayList<TimeEvent>();
-		TimeEvent timeEvent = null;
-		int timeEventId = 0;
+		TimeEvent timeEvent = new TimeEvent();
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			int playerId = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
@@ -96,7 +95,7 @@ public class TimeEventConnection implements TimeEventConnector {
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
 			
-			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == timeEventId){
+			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == timeEvent.getId()){
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					timeEvent.getSnapshot().addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}else{
@@ -112,7 +111,8 @@ public class TimeEventConnection implements TimeEventConnector {
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
-				timeEventId = resultSet.getInt(TimeEventsFields.TIMEEVENTID.toString().toLowerCase());
+				
+				int timeEventId = resultSet.getInt(TimeEventsFields.TIMEEVENTID.toString().toLowerCase());
 				boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
 				TimeEventType type = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 				timeEvent = new TimeEvent(timeEventId, starting, new Snapshot(snapshotId, gameId, new TimeStamp(period, elapsedSeconds, secondsLeft)), type);

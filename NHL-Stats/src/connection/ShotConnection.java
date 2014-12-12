@@ -98,8 +98,8 @@ public class ShotConnection implements ShotConnector {
 	
 	private Shot[] convertShots(ResultSet resultSet) throws SQLException{
 		List<Shot> shots = new ArrayList<Shot>();
-		//Snapshot snapshot = new Snapshot();
 		Shot shot = new Shot();
+		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			int shotPlayerId = resultSet.getInt(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());

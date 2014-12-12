@@ -99,8 +99,7 @@ public class PlayerEventConnection implements PlayerEventConnector {
 	
 	private PlayerEvent[] convertPlayerEvents(ResultSet resultSet) throws SQLException{
 		List<PlayerEvent> playerEvents = new ArrayList<PlayerEvent>();
-		PlayerEvent playerEvent = null;
-		int playerEventId = 0;
+		PlayerEvent playerEvent = new PlayerEvent();
 		int[] firstNameFields = connection.getMatchingColumns(resultSet, PlayersFields.FIRSTNAME);
 		int[] lastNameFields = connection.getMatchingColumns(resultSet, PlayersFields.LASTNAME);
 		int[] positionFields = connection.getMatchingColumns(resultSet, PlayersFields.POSITION);
@@ -113,7 +112,7 @@ public class PlayerEventConnection implements PlayerEventConnector {
 			Position snapshotPosition = Position.valueOf(resultSet.getString(positionFields[1]));
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
-			if((resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase())) == playerEventId){
+			if((resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase())) == playerEvent.getId()){
 				
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addHomePlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
@@ -121,7 +120,7 @@ public class PlayerEventConnection implements PlayerEventConnector {
 					playerEvent.getSnapshot().addAwayPlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
 				}
 			}else{
-				if(playerEvent != null){
+				if(resultSet.getRow() != 1){
 					playerEvents.add(playerEvent);
 				}
 				
@@ -130,7 +129,7 @@ public class PlayerEventConnection implements PlayerEventConnector {
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
-				playerEventId = resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase());
+				int playerEventId = resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase());
 				int playerEventPlayerId = resultSet.getInt(PlayerEventsFields.PLAYERID.toString().toLowerCase());
 				String playerEventFirstName = resultSet.getString(firstNameFields[0]);
 				String playerEventLastName = resultSet.getString(lastNameFields[0]);

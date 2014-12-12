@@ -24,6 +24,10 @@ public class Roster {
 		this(id, teamName, startDate, endDate, new Player[0]);
 	}
 	
+	public Roster(){
+		this(0, null, new Date(), new Date());
+	}
+	
 	public int getId() {
 		return id;
 	}

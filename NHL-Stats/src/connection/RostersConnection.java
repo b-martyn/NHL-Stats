@@ -76,22 +76,21 @@ public class RostersConnection implements RostersConnector{
 	
 	private Roster[] convertRosters(ResultSet resultSet) throws SQLException{
 		List<Roster> rosters = new ArrayList<Roster>();
-		Roster roster = null;
-		int rosterId = 0;
+		Roster roster = new Roster();
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			if((resultSet.getInt(RostersFields.ROSTERID.toString().toLowerCase())) == rosterId){
+			if((resultSet.getInt(RostersFields.ROSTERID.toString().toLowerCase())) == roster.getId()){
 				int playerId = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
 				String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 				String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
 				Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
 				roster.addPlayer(new Player(playerId, firstName, lastName, position));
-				continue;
 			}else{
 				if(roster != null){
 					rosters.add(roster);
 				}
-				rosterId = resultSet.getInt(RostersFields.ROSTERID.toString().toLowerCase());
+				
+				int rosterId = resultSet.getInt(RostersFields.ROSTERID.toString().toLowerCase());
 				TeamName teamName = TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase()).toUpperCase());
 				Date startDate = resultSet.getDate(RostersFields.STARTDATE.toString().toLowerCase());
 				Date endDate = resultSet.getDate(RostersFields.ENDDATE.toString().toLowerCase());

@@ -134,10 +134,10 @@ public class GameConnection implements GameConnector {
 		List<Shot> shots = new ArrayList<Shot>();
 		List<PlayerEvent> playerEvents = new ArrayList<PlayerEvent>();
 		List<TimeEvent> timeEvents = new ArrayList<TimeEvent>();
-		Game game = new Game(new Date(), TeamName.BRUINS, TeamName.BRUINS);
-		Shot shot = null;
-		PlayerEvent playerEvent = null;
-		TimeEvent timeEvent = null;
+		Game game = new Game();
+		Shot shot = new Shot();
+		PlayerEvent playerEvent = new PlayerEvent();
+		TimeEvent timeEvent = new TimeEvent();
 		
 		int[] snapshotIdColumns = connection.getMatchingColumns(resultSet, SnapshotsFields.SNAPSHOTID);
 		int[] periodColumns = connection.getMatchingColumns(resultSet, SnapshotsFields.PERIOD);

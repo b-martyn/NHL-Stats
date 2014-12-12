@@ -9,17 +9,20 @@ public class TimeStamp {
 	private short secondsLeft;
 
 	public TimeStamp(byte period, short elapsedSeconds, short secondsLeft) {
-		super();
 		this.period = period;
 		this.elapsedSeconds = elapsedSeconds;
 		this.secondsLeft = secondsLeft;
+	}
+	
+	public TimeStamp(){
+		this((byte)-1, (short)-1, (short)-1);
 	}
 	
 	public byte getPeriod() {
 		return period;
 	}
 	
-	void setPeriod(byte period) {
+	public void setPeriod(byte period) {
 		this.period = period;
 	}
 	
@@ -27,7 +30,7 @@ public class TimeStamp {
 		return elapsedSeconds;
 	}
 	
-	void setElapsedSeconds(short elapsedSeconds) {
+	public void setElapsedSeconds(short elapsedSeconds) {
 		this.elapsedSeconds = elapsedSeconds;
 	}
 	
@@ -35,7 +38,7 @@ public class TimeStamp {
 		return secondsLeft;
 	}
 	
-	void setSecondsLeft(short secondsLeft) {
+	public void setSecondsLeft(short secondsLeft) {
 		this.secondsLeft = secondsLeft;
 	}
 

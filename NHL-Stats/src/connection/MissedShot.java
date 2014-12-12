@@ -17,11 +17,15 @@ public class MissedShot extends Shot {
 		this(0, snapshot, player, shotType, distanceOut, missedLocation);
 	}
 	
+	public MissedShot(){
+		this(0, new Snapshot(), new Player(), null, (byte)0, null);
+	}
+	
 	public MissedLocation getMissedLocation() {
 		return missedLocation;
 	}
 
-	void setMissedLocation(MissedLocation missedLocation) {
+	public void setMissedLocation(MissedLocation missedLocation) {
 		this.missedLocation = missedLocation;
 	}
 

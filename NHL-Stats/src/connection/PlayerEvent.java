@@ -25,11 +25,15 @@ public class PlayerEvent {
 		this(0, player, snapshot, zone, type);
 	}
 	
+	public PlayerEvent(){
+		this(0, new Player(), new Snapshot(), null, null);
+	}
+	
 	public int getId() {
 		return id;
 	}
 	
-	void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -37,7 +41,7 @@ public class PlayerEvent {
 		return player;
 	}
 	
-	void setPlayer(Player player) {
+	public void setPlayer(Player player) {
 		this.player = player;
 	}
 	
@@ -45,7 +49,7 @@ public class PlayerEvent {
 		return snapshot;
 	}
 	
-	void setSnapshot(Snapshot snapshot) {
+	public void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
 	
@@ -53,7 +57,7 @@ public class PlayerEvent {
 		return zone;
 	}
 	
-	void setZone(Zone zone) {
+	public void setZone(Zone zone) {
 		this.zone = zone;
 	}
 	
@@ -61,7 +65,7 @@ public class PlayerEvent {
 		return type;
 	}
 	
-	void setType(PlayerEventType type) {
+	public void setType(PlayerEventType type) {
 		this.type = type;
 	}
 

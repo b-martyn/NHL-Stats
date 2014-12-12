@@ -22,7 +22,7 @@ public class BlockedShot extends Shot {
 		return blockingPlayer;
 	}
 
-	void setBlockingPlayer(Player blockingPlayer) {
+	public void setBlockingPlayer(Player blockingPlayer) {
 		this.blockingPlayer = blockingPlayer;
 	}
 
