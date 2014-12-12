@@ -13,6 +13,11 @@ public class ShootoutShot extends Shot {
 		this(0, snapshot, player, shotType, distanceOut, goal);
 	}
 	
+	public ShootoutShot(){
+		super();
+		this.goal = false;
+	}
+	
 	public boolean isGoal() {
 		return goal;
 	}

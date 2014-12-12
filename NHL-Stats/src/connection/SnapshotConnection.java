@@ -3,7 +3,6 @@ package connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import connection.DbConnection.Table;
@@ -76,7 +75,7 @@ public class SnapshotConnection implements SnapshotConnector {
 	
 	private Snapshot[] convertSnapshots(ResultSet resultSet) throws SQLException{
 		List<Snapshot> snapshots = new ArrayList<Snapshot>();
-		Snapshot snapshot = null;
+		Snapshot snapshot = new Snapshot();
 		int snapshotId = 0;
 		resultSet.beforeFirst();
 		while(resultSet.next()){
@@ -85,8 +84,11 @@ public class SnapshotConnection implements SnapshotConnector {
 			String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 			String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
 			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
+			
+			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			
 			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == snapshotId){
-				if(snapshot.getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}else{
 					snapshot.addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
@@ -95,18 +97,14 @@ public class SnapshotConnection implements SnapshotConnector {
 				if(resultSet.getRow() != 1){
 					snapshots.add(snapshot);
 				}
-				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
-				Date date = resultSet.getDate(GamesFields.DATE.toString().toLowerCase());
-				TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
-				TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
-				byte homeScore = resultSet.getByte(GamesFields.HOMESCORE.toString().toLowerCase());
-				byte awayScore = resultSet.getByte(GamesFields.AWAYSCORE.toString().toLowerCase());
+				
 				snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
+				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
-				snapshot = new Snapshot(snapshotId, new Game(gameId, date, homeTeam, awayTeam, homeScore, awayScore), new TimeStamp(period, elapsedSeconds, secondsLeft));
-				if(snapshot.getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+				snapshot = new Snapshot(snapshotId, gameId, new TimeStamp(period, elapsedSeconds, secondsLeft));
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}else{
 					snapshot.addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));

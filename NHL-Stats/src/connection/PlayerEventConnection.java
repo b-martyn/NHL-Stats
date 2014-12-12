@@ -3,7 +3,6 @@ package connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import connection.DbConnection.Table;
@@ -99,7 +98,6 @@ public class PlayerEventConnection implements PlayerEventConnector {
 
 	
 	private PlayerEvent[] convertPlayerEvents(ResultSet resultSet) throws SQLException{
-		// FIXME to remove arrays of ints by replacing PlayerId fields, check all connections for refrences to playerid instead of snapshotplayerid etc..
 		List<PlayerEvent> playerEvents = new ArrayList<PlayerEvent>();
 		PlayerEvent playerEvent = null;
 		int playerEventId = 0;
@@ -109,12 +107,15 @@ public class PlayerEventConnection implements PlayerEventConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
+			int snapshotPlayerId = resultSet.getInt(SnapshotPlayersFields.SNAPSHOTPLAYERID.toString().toLowerCase());
+			String snapshotFirstName = resultSet.getString(firstNameFields[1]);
+			String snapshotLastName = resultSet.getString(lastNameFields[1]);
+			Position snapshotPosition = Position.valueOf(resultSet.getString(positionFields[1]));
+			
+			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
 			if((resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase())) == playerEventId){
-				int snapshotPlayerId = resultSet.getInt(SnapshotPlayersFields.SNAPSHOTPLAYERID.toString().toLowerCase());
-				String snapshotFirstName = resultSet.getString(firstNameFields[1]);
-				String snapshotLastName = resultSet.getString(lastNameFields[1]);
-				Position snapshotPosition = Position.valueOf(resultSet.getString(positionFields[1]));
-				if(playerEvent.getSnapshot().getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+				
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addHomePlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
 				}else{
 					playerEvent.getSnapshot().addAwayPlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
@@ -123,13 +124,9 @@ public class PlayerEventConnection implements PlayerEventConnector {
 				if(playerEvent != null){
 					playerEvents.add(playerEvent);
 				}
-				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
-				Date date = resultSet.getDate(GamesFields.DATE.toString().toLowerCase());
-				TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
-				TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
-				byte homeScore = resultSet.getByte(GamesFields.HOMESCORE.toString().toLowerCase());
-				byte awayScore = resultSet.getByte(GamesFields.AWAYSCORE.toString().toLowerCase());
+				
 				int snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
+				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
@@ -145,22 +142,17 @@ public class PlayerEventConnection implements PlayerEventConnector {
 					Infraction infraction = Infraction.valueOf(resultSet.getString(PlayerEventsFields.INFRACTION.toString().toLowerCase()));
 					byte minutes = resultSet.getByte(PlayerEventsFields.MINUTES.toString().toLowerCase());
 					playerEvent = new Penalty(playerEventId, player, 
-							new Snapshot(snapshotId, 
-									new Game(gameId, date, homeTeam, awayTeam, homeScore, awayScore), 
+							new Snapshot(snapshotId, gameId, 
 									new TimeStamp(period, elapsedSeconds, secondsLeft)), 
 									zone, type, infraction, minutes);
 				}else{
 					playerEvent = new PlayerEvent(playerEventId, player, 
-						new Snapshot(snapshotId, 
-								new Game(gameId, date, homeTeam, awayTeam, homeScore, awayScore), 
+						new Snapshot(snapshotId, gameId, 
 								new TimeStamp(period, elapsedSeconds, secondsLeft)), 
 								zone, type);
 				}
-				int snapshotPlayerId = resultSet.getInt(SnapshotPlayersFields.SNAPSHOTPLAYERID.toString().toLowerCase());
-				String snapshotFirstName = resultSet.getString(firstNameFields[1]);
-				String snapshotLastName = resultSet.getString(lastNameFields[1]);
-				Position snapshotPosition = Position.valueOf(resultSet.getString(positionFields[1]));
-				if(playerEvent.getSnapshot().getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+				
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addHomePlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
 				}else{
 					playerEvent.getSnapshot().addAwayPlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));

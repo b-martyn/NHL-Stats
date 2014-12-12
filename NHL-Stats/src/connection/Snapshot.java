@@ -1,24 +1,25 @@
 package connection;
 
-import java.util.Arrays;
-
 public class Snapshot {
 	
 	private int id;
-	private Game game;
+	private int gameId;
 	private TimeStamp timeStamp;
 	private Player[] homePlayersOnIce = new Player[0];
 	private Player[] awayPlayersOnIce = new Player[0];
 	
-	public Snapshot(int id, Game game, TimeStamp timeStamp) {
-		super();
+	public Snapshot(int id, int gameId, TimeStamp timeStamp) {
 		this.id = id;
-		this.game = game;
+		this.gameId = gameId;
 		this.timeStamp = timeStamp;
 	}
 	
-	public Snapshot(Game game, TimeStamp timeStamp) {
-		this(0, game, timeStamp);
+	public Snapshot(int gameId, TimeStamp timeStamp) {
+		this(0, gameId, timeStamp);
+	}
+	
+	public Snapshot(){
+		this(0, 0, null);
 	}
 	
 	public int getId() {
@@ -29,12 +30,12 @@ public class Snapshot {
 		this.id = id;
 	}
 	
-	public Game getGame() {
-		return game;
+	public int getGameId() {
+		return gameId;
 	}
 	
-	void setGame(Game gameId) {
-		this.game = gameId;
+	void setGame(int gameId) {
+		this.gameId = gameId;
 	}
 	
 	public TimeStamp getTimeStamp() {
@@ -73,9 +74,9 @@ public class Snapshot {
 
 	@Override
 	public String toString() {
-		return "Snapshot [id=" + id + ", game=" + game.getId() + ", timeStamp="
+		return "Snapshot [id=" + id + ", gameId=" + gameId + ", timeStamp="
 				+ timeStamp + ", homePlayersOnIce="
-				+ Arrays.toString(homePlayersOnIce) + ", awayPlayersOnIce="
-				+ Arrays.toString(awayPlayersOnIce) + "]";
+				+ homePlayersOnIce.length + ", awayPlayersOnIce="
+				+ awayPlayersOnIce.length + "]";
 	}
 }

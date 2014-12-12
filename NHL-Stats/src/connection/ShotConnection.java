@@ -3,7 +3,6 @@ package connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import connection.DbConnection.Table;
@@ -99,8 +98,8 @@ public class ShotConnection implements ShotConnector {
 	
 	private Shot[] convertShots(ResultSet resultSet) throws SQLException{
 		List<Shot> shots = new ArrayList<Shot>();
-		Snapshot snapshot = new Snapshot(0, new Game(new Date(), TeamName.BRUINS, TeamName.BRUINS), new TimeStamp((byte)0, (short)0, (short)0));
-		Shot shot = new Shot(0, snapshot, new Player(0, "", "", Position.GOALIE), ShotType.BACKHAND, (byte)0);
+		//Snapshot snapshot = new Snapshot();
+		Shot shot = new Shot();
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			int shotPlayerId = resultSet.getInt(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());
@@ -112,11 +111,13 @@ public class ShotConnection implements ShotConnector {
 			Position snapshotPlayerPosition = Position.valueOf(resultSet.getString(snapshotPlayerIdIndex + (PlayersFields.POSITION.getColumnNumber() - PlayersFields.PLAYERID.getColumnNumber())));
 			Player snapshotPlayer = new Player(snapshotPlayerId, snapshotPlayerFirstName, snapshotPlayerLastName, snapshotPlayerPosition);
 			
+			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			
 			if((resultSet.getInt(ShotsFields.SHOTID.toString().toLowerCase())) == shot.getId()){
-				if(snapshot.getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
-					snapshot.addHomePlayerOnIce(snapshotPlayer);
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+					shot.getSnapshot().addHomePlayerOnIce(snapshotPlayer);
 				}else{
-					snapshot.addAwayPlayerOnIce(snapshotPlayer);
+					shot.getSnapshot().addAwayPlayerOnIce(snapshotPlayer);
 				}
 				if(shotPlayerId != shot.getPlayer().getId()){
 					int shotPlayerIdIndex = resultSet.findColumn(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());
@@ -143,23 +144,17 @@ public class ShotConnection implements ShotConnector {
 					shots.add(shot);
 				}
 				int snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
+				int gameId = resultSet.getInt(SnapshotsFields.GAMEID.toString().toLowerCase());
 				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
-				
-				int gameId = resultSet.getInt(SnapshotsFields.GAMEID.toString().toLowerCase());
-				Date date = resultSet.getDate(GamesFields.DATE.toString().toLowerCase());
-				TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
-				TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
-				byte homeScore = resultSet.getByte(GamesFields.HOMESCORE.toString().toLowerCase());
-				byte awayScore = resultSet.getByte(GamesFields.AWAYSCORE.toString().toLowerCase());
-				snapshot = new Snapshot(snapshotId, new Game(gameId, date, homeTeam, awayTeam, homeScore, awayScore), new TimeStamp(period, elapsedSeconds, secondsLeft));
-				if(snapshot.getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+				Snapshot snapshot = new Snapshot(snapshotId, gameId, new TimeStamp(period, elapsedSeconds, secondsLeft));
+				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(snapshotPlayer);
 				}else{
 					snapshot.addAwayPlayerOnIce(snapshotPlayer);
-				}				
-
+				}
+				
 				int playerId = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
 				String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 				String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());

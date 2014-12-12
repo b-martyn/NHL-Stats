@@ -224,7 +224,7 @@ public class GameConnection implements GameConnector {
 					byte shotSnapshotPeriod = resultSet.getByte(periodColumns[0]);
 					short shotSnapshotElapsedSeconds = resultSet.getShort(elapsedSecondsColumns[0]);
 					short shotSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[0]);
-					Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game, new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
+					Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game.getId(), new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
 					int shotPlayerId = resultSet.getInt(playerIdColumns[0]);
 					String shotPlayerFirstName = resultSet.getString(firstNameColumns[0]);
 					String shotPlayerLastName = resultSet.getString(lastNameColumns[0]);
@@ -287,7 +287,7 @@ public class GameConnection implements GameConnector {
 					boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
 					TimeEventType timeEventType = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 					timeEvent = new TimeEvent(timeEventId, starting, 
-									new Snapshot(timeEventSnapshotId, game, 
+									new Snapshot(timeEventSnapshotId, game.getId(), 
 										new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
 									timeEventType);
 				}
@@ -318,7 +318,7 @@ public class GameConnection implements GameConnector {
 					byte playerEventSnapshotPeriod = resultSet.getByte(periodColumns[2]);
 					short playerEventSnapshotElapsedSeconds = resultSet.getShort(elapsedSecondsColumns[2]);
 					short playerEventSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[2]);
-					Snapshot playerEventSnapshot = new Snapshot(playerEventSnapshotId, game, 
+					Snapshot playerEventSnapshot = new Snapshot(playerEventSnapshotId, game.getId(), 
 							new TimeStamp(playerEventSnapshotPeriod, playerEventSnapshotElapsedSeconds, playerEventSnapshotSecondsLeft));
 					int playerEventId = resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase());
 					int playerEventPlayerId = resultSet.getInt(playerIdColumns[1]);
@@ -359,7 +359,7 @@ public class GameConnection implements GameConnector {
 				byte shotSnapshotPeriod = resultSet.getByte(periodColumns[0]);
 				short shotSnapshotElapsedSeconds = resultSet.getShort(elapsedSecondsColumns[0]);
 				short shotSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[0]);
-				Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game, new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
+				Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game.getId(), new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
 				int shotPlayerId = resultSet.getInt(playerIdColumns[0]);
 				String shotPlayerFirstName = resultSet.getString(firstNameColumns[0]);
 				String shotPlayerLastName = resultSet.getString(lastNameColumns[0]);
@@ -399,7 +399,7 @@ public class GameConnection implements GameConnector {
 				boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
 				TimeEventType timeEventType = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 				timeEvent = new TimeEvent(timeEventId, starting, 
-								new Snapshot(timeEventSnapshotId, game, 
+								new Snapshot(timeEventSnapshotId, game.getId(), 
 									new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
 								timeEventType);
 				
@@ -407,7 +407,7 @@ public class GameConnection implements GameConnector {
 				byte playerEventSnapshotPeriod = resultSet.getByte(periodColumns[2]);
 				short playerEventSnapshotElapsedSeconds = resultSet.getShort(elapsedSecondsColumns[2]);
 				short playerEventSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[2]);
-				Snapshot playerEventSnapshot = new Snapshot(playerEventSnapshotId, game, 
+				Snapshot playerEventSnapshot = new Snapshot(playerEventSnapshotId, game.getId(), 
 						new TimeStamp(playerEventSnapshotPeriod, playerEventSnapshotElapsedSeconds, playerEventSnapshotSecondsLeft));
 				int playerEventId = resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase());
 				int playerEventPlayerId = resultSet.getInt(playerIdColumns[1]);

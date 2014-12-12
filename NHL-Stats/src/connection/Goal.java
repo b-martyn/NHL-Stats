@@ -31,6 +31,12 @@ public class Goal extends Shot {
 	public Goal(Snapshot snapshot, Player player, ShotType shotType, byte distanceOut) {
 		this(0, snapshot, player, shotType, distanceOut);
 	}
+	
+	public Goal(){
+		super();
+		this.assist1 = new Player();
+		this.assist2 = new Player();
+	}
 		
 	public Player getAssist1() {
 		return assist1;

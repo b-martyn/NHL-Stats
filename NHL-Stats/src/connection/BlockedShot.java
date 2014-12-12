@@ -13,6 +13,11 @@ public class BlockedShot extends Shot {
 		this(0, snapshot, player, shotType, distanceOut, blockingPlayer);
 	}
 	
+	public BlockedShot(){
+		super();
+		this.blockingPlayer = new Player();
+	}
+	
 	public Player getBlockingPlayer() {
 		return blockingPlayer;
 	}

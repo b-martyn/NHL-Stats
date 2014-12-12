@@ -21,6 +21,10 @@ public class Player {
 		this(0, firstName, lastName, position);
 	}
 	
+	public Player(){
+		this(0, "", "", null);
+	}
+	
 	public int getId() {
 		return id;
 	}

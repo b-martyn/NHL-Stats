@@ -24,6 +24,10 @@ public class Shot {
 		this(0, snapshot, player, shotType, distanceOut);
 	}
 	
+	public Shot(){
+		this(0, new Snapshot(), new Player(), null, (byte)0);
+	}
+	
 	public int getId() {
 		return id;
 	}
