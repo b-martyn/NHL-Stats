@@ -213,7 +213,7 @@ public class GameConnection implements GameConnector {
 					if(!result){
 						if(game.getHomeTeam().equals(shotSnapshotPlayerTeam)){
 							shot.getSnapshot().addHomePlayerOnIce(shotSnapshotPlayer);
-						}else{
+						}else if(game.getAwayTeam().equals(shotSnapshotPlayerTeam)){
 							shot.getSnapshot().addAwayPlayerOnIce(shotSnapshotPlayer);
 						}
 					}
@@ -272,7 +272,7 @@ public class GameConnection implements GameConnector {
 					if(!result){
 						if(game.getHomeTeam().equals(timeEventSnapshotPlayerTeam)){
 							timeEvent.getSnapshot().addHomePlayerOnIce(timeEventSnapshotPlayer);
-						}else{
+						}else if(game.getAwayTeam().equals(timeEventSnapshotPlayerTeam)){
 							timeEvent.getSnapshot().addAwayPlayerOnIce(timeEventSnapshotPlayer);
 						}
 					}
@@ -288,7 +288,7 @@ public class GameConnection implements GameConnector {
 					TimeEventType timeEventType = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 					timeEvent = new TimeEvent(timeEventId, starting, 
 									new Snapshot(timeEventSnapshotId, game.getId(), 
-										new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
+									new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
 									timeEventType);
 				}
 				
@@ -307,7 +307,7 @@ public class GameConnection implements GameConnector {
 					if(!result){
 						if(game.getHomeTeam().equals(playerEventSnapshotPlayerTeam)){
 							playerEvent.getSnapshot().addHomePlayerOnIce(playerEventSnapshotPlayer);
-						}else{
+						}else if(game.getAwayTeam().equals(playerEventSnapshotPlayer)){
 							playerEvent.getSnapshot().addAwayPlayerOnIce(playerEventSnapshotPlayer);
 						}
 					}
@@ -320,6 +320,7 @@ public class GameConnection implements GameConnector {
 					short playerEventSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[2]);
 					Snapshot playerEventSnapshot = new Snapshot(playerEventSnapshotId, game.getId(), 
 							new TimeStamp(playerEventSnapshotPeriod, playerEventSnapshotElapsedSeconds, playerEventSnapshotSecondsLeft));
+					
 					int playerEventId = resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase());
 					int playerEventPlayerId = resultSet.getInt(playerIdColumns[1]);
 					String playerEventFirstName = resultSet.getString(firstNameColumns[4]);
@@ -359,7 +360,8 @@ public class GameConnection implements GameConnector {
 				byte shotSnapshotPeriod = resultSet.getByte(periodColumns[0]);
 				short shotSnapshotElapsedSeconds = resultSet.getShort(elapsedSecondsColumns[0]);
 				short shotSnapshotSecondsLeft = resultSet.getShort(secondsLeftColumns[0]);
-				Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game.getId(), new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
+				Snapshot shotSnapshot = new Snapshot(shotSnapshotId, game.getId(), 
+						new TimeStamp(shotSnapshotPeriod, shotSnapshotElapsedSeconds, shotSnapshotSecondsLeft));
 				int shotPlayerId = resultSet.getInt(playerIdColumns[0]);
 				String shotPlayerFirstName = resultSet.getString(firstNameColumns[0]);
 				String shotPlayerLastName = resultSet.getString(lastNameColumns[0]);
@@ -400,7 +402,7 @@ public class GameConnection implements GameConnector {
 				TimeEventType timeEventType = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
 				timeEvent = new TimeEvent(timeEventId, starting, 
 								new Snapshot(timeEventSnapshotId, game.getId(), 
-									new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
+								new TimeStamp(timeEventSnapshotPeriod, timeEventSnapshotElapsedSeconds, timeEventSnapshotSecondsLeft)), 
 								timeEventType);
 				
 				int playerEventSnapshotId = resultSet.getInt(snapshotIdColumns[2]);
@@ -427,17 +429,17 @@ public class GameConnection implements GameConnector {
 				
 				if(game.getHomeTeam().equals(shotSnapshotPlayerTeam)){
 					shot.getSnapshot().addHomePlayerOnIce(shotSnapshotPlayer);
-				}else{
+				}else if(game.getAwayTeam().equals(shotSnapshotPlayerTeam)){
 					shot.getSnapshot().addAwayPlayerOnIce(shotSnapshotPlayer);
 				}
 				if(game.getHomeTeam().equals(timeEventSnapshotPlayerTeam)){
 					timeEvent.getSnapshot().addHomePlayerOnIce(timeEventSnapshotPlayer);
-				}else{
+				}else if(game.getAwayTeam().equals(timeEventSnapshotPlayerTeam)){
 					timeEvent.getSnapshot().addAwayPlayerOnIce(timeEventSnapshotPlayer);
 				}
 				if(game.getHomeTeam().equals(playerEventSnapshotPlayerTeam)){
 					playerEvent.getSnapshot().addHomePlayerOnIce(playerEventSnapshotPlayer);
-				}else{
+				}else if(game.getAwayTeam().equals(playerEventSnapshotPlayer)){
 					playerEvent.getSnapshot().addAwayPlayerOnIce(playerEventSnapshotPlayer);
 				}
 			}

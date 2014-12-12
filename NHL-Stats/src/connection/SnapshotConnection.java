@@ -79,18 +79,18 @@ public class SnapshotConnection implements SnapshotConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			//Always more snapshotPlayers than any other field
 			int playerId = resultSet.getInt(SnapshotPlayersFields.SNAPSHOTPLAYERID.toString().toLowerCase());
 			String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 			String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
 			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
 			
 			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == snapshot.getId()){
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}
 			}else{
@@ -104,9 +104,10 @@ public class SnapshotConnection implements SnapshotConnector {
 				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
 				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
 				snapshot = new Snapshot(snapshotId, gameId, new TimeStamp(period, elapsedSeconds, secondsLeft));
+				
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}
 			}

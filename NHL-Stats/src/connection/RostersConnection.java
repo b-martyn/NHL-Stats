@@ -77,6 +77,7 @@ public class RostersConnection implements RostersConnector{
 	private Roster[] convertRosters(ResultSet resultSet) throws SQLException{
 		List<Roster> rosters = new ArrayList<Roster>();
 		Roster roster = new Roster();
+		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			if((resultSet.getInt(RostersFields.ROSTERID.toString().toLowerCase())) == roster.getId()){
@@ -86,7 +87,7 @@ public class RostersConnection implements RostersConnector{
 				Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
 				roster.addPlayer(new Player(playerId, firstName, lastName, position));
 			}else{
-				if(roster != null){
+				if(resultSet.getRow() != 1){
 					rosters.add(roster);
 				}
 				
@@ -95,6 +96,7 @@ public class RostersConnection implements RostersConnector{
 				Date startDate = resultSet.getDate(RostersFields.STARTDATE.toString().toLowerCase());
 				Date endDate = resultSet.getDate(RostersFields.ENDDATE.toString().toLowerCase());
 				roster = new Roster(rosterId, teamName, startDate, endDate);int playerId = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
+				
 				String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 				String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
 				Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));

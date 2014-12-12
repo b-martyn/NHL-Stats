@@ -94,11 +94,12 @@ public class TimeEventConnection implements TimeEventConnector {
 			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
 			
 			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == timeEvent.getId()){
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					timeEvent.getSnapshot().addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					timeEvent.getSnapshot().addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}
 			}else{
@@ -119,7 +120,7 @@ public class TimeEventConnection implements TimeEventConnector {
 				
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					timeEvent.getSnapshot().addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					timeEvent.getSnapshot().addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
 				}
 			}

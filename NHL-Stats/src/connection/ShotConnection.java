@@ -103,7 +103,7 @@ public class ShotConnection implements ShotConnector {
 		resultSet.beforeFirst();
 		while(resultSet.next()){
 			int shotPlayerId = resultSet.getInt(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());
-			//Always more snapshotPlayers than any other field
+			
 			int snapshotPlayerIdIndex = resultSet.findColumn(SnapshotPlayersFields.SNAPSHOTPLAYERID.toString().toLowerCase());
 			int snapshotPlayerId = resultSet.getInt(snapshotPlayerIdIndex);
 			String snapshotPlayerFirstName = resultSet.getString(snapshotPlayerIdIndex + (PlayersFields.FIRSTNAME.getColumnNumber() - PlayersFields.PLAYERID.getColumnNumber()));
@@ -112,13 +112,15 @@ public class ShotConnection implements ShotConnector {
 			Player snapshotPlayer = new Player(snapshotPlayerId, snapshotPlayerFirstName, snapshotPlayerLastName, snapshotPlayerPosition);
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
 			
 			if((resultSet.getInt(ShotsFields.SHOTID.toString().toLowerCase())) == shot.getId()){
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					shot.getSnapshot().addHomePlayerOnIce(snapshotPlayer);
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					shot.getSnapshot().addAwayPlayerOnIce(snapshotPlayer);
 				}
+				
 				if(shotPlayerId != shot.getPlayer().getId()){
 					int shotPlayerIdIndex = resultSet.findColumn(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());
 					String shotPlayerFirstName = resultSet.getString(shotPlayerIdIndex + 2);
@@ -151,7 +153,7 @@ public class ShotConnection implements ShotConnector {
 				Snapshot snapshot = new Snapshot(snapshotId, gameId, new TimeStamp(period, elapsedSeconds, secondsLeft));
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addHomePlayerOnIce(snapshotPlayer);
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					snapshot.addAwayPlayerOnIce(snapshotPlayer);
 				}
 				

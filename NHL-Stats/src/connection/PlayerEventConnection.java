@@ -112,11 +112,13 @@ public class PlayerEventConnection implements PlayerEventConnector {
 			Position snapshotPosition = Position.valueOf(resultSet.getString(positionFields[1]));
 			
 			TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+			TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
+			
 			if((resultSet.getInt(PlayerEventsFields.PLAYEREVENTID.toString().toLowerCase())) == playerEvent.getId()){
 				
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addHomePlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addAwayPlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
 				}
 			}else{
@@ -141,19 +143,19 @@ public class PlayerEventConnection implements PlayerEventConnector {
 					Infraction infraction = Infraction.valueOf(resultSet.getString(PlayerEventsFields.INFRACTION.toString().toLowerCase()));
 					byte minutes = resultSet.getByte(PlayerEventsFields.MINUTES.toString().toLowerCase());
 					playerEvent = new Penalty(playerEventId, player, 
-							new Snapshot(snapshotId, gameId, 
+									new Snapshot(snapshotId, gameId, 
 									new TimeStamp(period, elapsedSeconds, secondsLeft)), 
 									zone, type, infraction, minutes);
 				}else{
 					playerEvent = new PlayerEvent(playerEventId, player, 
-						new Snapshot(snapshotId, gameId, 
-								new TimeStamp(period, elapsedSeconds, secondsLeft)), 
-								zone, type);
+									new Snapshot(snapshotId, gameId, 
+									new TimeStamp(period, elapsedSeconds, secondsLeft)), 
+									zone, type);
 				}
 				
 				if(homeTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addHomePlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
-				}else{
+				}else if(awayTeam.equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
 					playerEvent.getSnapshot().addAwayPlayerOnIce(new Player(snapshotPlayerId, snapshotFirstName, snapshotLastName, snapshotPosition));
 				}
 			}
