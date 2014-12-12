@@ -1,6 +1,6 @@
 package connection;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public enum SnapshotPlayersFields implements TableField {
 	SNAPSHOTID(1), SNAPSHOTPLAYERID(2);

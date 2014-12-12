@@ -2,7 +2,7 @@ package connection;
 
 import java.sql.SQLException;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public class DbConnectorFactory {
 	public DbConnector getDbConnector(Table table) throws SQLException{

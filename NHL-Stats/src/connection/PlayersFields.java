@@ -1,6 +1,6 @@
 package connection;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public enum PlayersFields implements TableField {
 	PLAYERID(1), ACTIVE(2), FIRSTNAME(3), LASTNAME(4), POSITION(5);

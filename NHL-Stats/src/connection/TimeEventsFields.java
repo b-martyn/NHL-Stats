@@ -1,6 +1,6 @@
 package connection;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public enum TimeEventsFields implements TableField {
 	TIMEEVENTID(1), SNAPSHOTID(2), TIMEEVENTTYPE(3), STARTINGCLOCK(4);

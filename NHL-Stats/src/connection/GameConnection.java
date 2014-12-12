@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 import connection.RowSetInstructions.Comparator;
 import connection.Franchise.TeamName;
 import connection.MissedShot.MissedLocation;

@@ -1,6 +1,6 @@
 package connection;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public enum RostersFields implements TableField {
 	ROSTERID(1), TEAM(2), STARTDATE(3), ENDDATE(4);

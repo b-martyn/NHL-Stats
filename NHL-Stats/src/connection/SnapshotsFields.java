@@ -1,6 +1,6 @@
 package connection;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public enum SnapshotsFields implements TableField {
 	SNAPSHOTID(1), GAMEID(2), PERIOD(3), ELAPSEDSECONDS(4), SECONDSLEFT(5);

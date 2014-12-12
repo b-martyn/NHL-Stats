@@ -10,7 +10,7 @@ import javax.sql.RowSet;
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.Predicate;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 
 public class RowSetInstructions {
 	

@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import connection.DbConnection.Table;
+import connection.DbConnector.Table;
 import connection.Player.Position;
 import connection.RowSetInstructions.Comparator;
 import connection.RowSetInstructions.Filter;
