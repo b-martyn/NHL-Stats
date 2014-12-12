@@ -3,7 +3,7 @@ package connection;
 import connection.DbConnection.Table;
 
 public enum TimeEventsFields implements TableField {
-	ID(1), SNAPSHOTID(2), TIMEEVENTTYPE(3), STARTINGCLOCK(4);
+	TIMEEVENTID(1), SNAPSHOTID(2), TIMEEVENTTYPE(3), STARTINGCLOCK(4);
 	
 	private static final Table table = Table.TIMEEVENTS;
 	private int columnNumber;
@@ -11,7 +11,8 @@ public enum TimeEventsFields implements TableField {
 	private TimeEventsFields(int columnNumber){
 		this.columnNumber = columnNumber;
 	}
-	
+
+	@Override
 	public int getColumnNumber(){
 		return columnNumber;
 	}
@@ -24,7 +25,7 @@ public enum TimeEventsFields implements TableField {
 	@Override
 	public FieldType getType() {
 		switch (this){
-			case ID:
+			case TIMEEVENTID:
 				return FieldType.INT;
 			case SNAPSHOTID:
 				return FieldType.INT;

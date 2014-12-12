@@ -7,6 +7,7 @@ interface TableField {
 		BYTE, SHORT, INT, DATE, STRING, BOOLEAN;
 	}
 	
+	int getColumnNumber();
 	Table getTable();
 	FieldType getType();
 }

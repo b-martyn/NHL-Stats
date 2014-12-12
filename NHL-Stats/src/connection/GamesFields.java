@@ -3,7 +3,7 @@ package connection;
 import connection.DbConnection.Table;
 
 public enum GamesFields implements TableField {
-	ID(1), DATE(2), HOMETEAM(3), HOMESCORE(4), AWAYTEAM(5), AWAYSCORE(6);
+	GAMEID(1), DATE(2), HOMETEAM(3), HOMESCORE(4), AWAYTEAM(5), AWAYSCORE(6);
 	
 	private static final Table table = Table.GAMES;
 	private int columnNumber;
@@ -11,7 +11,8 @@ public enum GamesFields implements TableField {
 	private GamesFields(int columnNumber){
 		this.columnNumber = columnNumber;
 	}
-	
+
+	@Override
 	public int getColumnNumber(){
 		return columnNumber;
 	}
@@ -29,7 +30,7 @@ public enum GamesFields implements TableField {
 				return FieldType.BYTE;
 			case HOMETEAM:
 				return FieldType.STRING;
-			case ID:
+			case GAMEID:
 				return FieldType.INT;
 			default:
 				return null;

@@ -3,7 +3,7 @@ package connection;
 import connection.DbConnection.Table;
 
 public enum PlayerEventsFields implements TableField {
-	ID(1), SNAPSHOTID(2), PLAYEREVENTTYPE(3), ZONE(4), PLAYERID(5), INFRACTION(6), MINUTES(7);
+	PLAYEREVENTID(1), SNAPSHOTID(2), PLAYEREVENTTYPE(3), ZONE(4), PLAYERID(5), INFRACTION(6), MINUTES(7);
 
 	private static final Table table = Table.PLAYEREVENTS;
 	private int columnNumber;
@@ -11,7 +11,8 @@ public enum PlayerEventsFields implements TableField {
 	private PlayerEventsFields(int columnNumber){
 		this.columnNumber = columnNumber;
 	}
-	
+
+	@Override
 	public int getColumnNumber(){
 		return columnNumber;
 	}
@@ -24,7 +25,7 @@ public enum PlayerEventsFields implements TableField {
 	@Override
 	public FieldType getType() {
 		switch(this){
-			case ID:
+			case PLAYEREVENTID:
 				return FieldType.INT;
 			case INFRACTION:
 				return FieldType.STRING;

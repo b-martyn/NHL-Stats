@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface DbConnector {
-	ResultSet getResultSet() throws SQLException;
-	ResultSet getResultSet(DbRowSetInstructions instructions) throws SQLException;
+	ResultSet getBaseResultSet() throws SQLException;
+	ResultSet getResultSet(RowSetInstructions instructions) throws SQLException;
+	int[] getMatchingColumns(ResultSet resultSet, TableField tableField) throws SQLException;
 }

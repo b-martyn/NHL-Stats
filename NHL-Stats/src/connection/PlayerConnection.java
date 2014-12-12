@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connection.DbConnection.Table;
-import connection.DbRowSetInstructions.Comparator;
-import connection.Franchise.TeamName;
 import connection.Player.Position;
+import connection.RowSetInstructions.Comparator;
+import connection.RowSetInstructions.Filter;
 
 public class PlayerConnection implements PlayerConnector {
 	
@@ -28,21 +28,25 @@ public class PlayerConnection implements PlayerConnector {
 	}
 	
 	@Override
-	public Player[] getPlayers() throws SQLException {
-		return convertPlayers(connection.getResultSet());
+	public RowSetInstructions getDefaultInstructions(){
+		RowSetInstructions instructions = new RowSetInstructions(Table.ROSTERS);
+		return instructions;
 	}
-
+	
 	@Override
-	public Player[] getPlayers(TeamName teamName) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.PLAYERS);
-		instructions.addNewFilterCriteria(PlayersFields.TEAM, Comparator.EQUAL, teamName.toString());
-		return convertPlayers(connection.getResultSet(instructions));
+	public ResultSet getLoadedResultSet() throws SQLException{
+		return connection.getResultSet(getDefaultInstructions());
+	}
+	@Override
+	public Player[] getPlayers() throws SQLException {
+		return convertPlayers(getLoadedResultSet());
 	}
 
 	@Override
 	public Player getPlayer(int id) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.PLAYERS);
-		instructions.addNewFilterCriteria(PlayersFields.ID, Comparator.EQUAL, id);
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(PlayersFields.PLAYERID, Comparator.EQUAL, id);
+		instructions.addFilter(filter);
 		try{
 			return convertPlayers(connection.getResultSet(instructions))[0];
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -51,11 +55,24 @@ public class PlayerConnection implements PlayerConnector {
 	}
 
 	@Override
-	public Player getPlayer(byte number, TeamName teamName) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.PLAYERS);
-		instructions.addNewFilterCriteria(PlayersFields.NUMBER, Comparator.EQUAL, number);
-		instructions.addNewConditionCriteria(PlayersFields.TEAM, Comparator.EQUAL, teamName.toString(), true);
-		//System.out.println(convertPlayers(connection.getResultSet(instructions)).length);
+	public Player getPlayer(String name) throws SQLException {
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(PlayersFields.FIRSTNAME, Comparator.EQUAL, name);
+		filter.filterAdditionField(PlayersFields.LASTNAME, Comparator.EQUAL, name, false);
+		instructions.addFilter(filter);
+		try{
+			return convertPlayers(connection.getResultSet(instructions))[0];
+		}catch(ArrayIndexOutOfBoundsException e){
+			return null;
+		}
+	}
+
+	@Override
+	public Player getPlayer(String firstName, String lastName) throws SQLException {
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(PlayersFields.FIRSTNAME, Comparator.EQUAL, firstName);
+		filter.filterAdditionField(PlayersFields.LASTNAME, Comparator.EQUAL, lastName, true);
+		instructions.addFilter(filter);
 		try{
 			return convertPlayers(connection.getResultSet(instructions))[0];
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -68,13 +85,11 @@ public class PlayerConnection implements PlayerConnector {
 		
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt(PlayersFields.ID.toString().toLowerCase());
+			int id = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
 			String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
 			String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
-			TeamName team = TeamName.valueOf(resultSet.getString(PlayersFields.TEAM.toString().toLowerCase()));
 			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
-			byte number = resultSet.getByte(PlayersFields.NUMBER.toString().toLowerCase());
-			players.add(new Player(id, firstName, lastName, team, position, number));
+			players.add(new Player(id, firstName, lastName, position));
 		}
 		return players.toArray(new Player[players.size()]);
 	}

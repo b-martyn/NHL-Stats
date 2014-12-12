@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import connection.TimeEvent.TimeEventType;
 
-interface TimeEventConnector {
+interface TimeEventConnector extends TableConnector{
 	TimeEvent[] getTimeEvents() throws SQLException;
 	TimeEvent[] getTimeEvents(Game game) throws SQLException;
 	TimeEvent[] getTimeEvents(TimeEventType type) throws SQLException;

@@ -13,7 +13,6 @@ public class Shot {
 	private byte distanceOut;
 
 	public Shot(int id, Snapshot snapshot, Player player, ShotType shotType, byte distanceOut) {
-		super();
 		this.id = id;
 		this.snapshot = snapshot;
 		this.player = player;
@@ -33,11 +32,11 @@ public class Shot {
 		this.id = id;
 	}
 	
-	public Snapshot getTimeStamp() {
+	public Snapshot getSnapshot() {
 		return snapshot;
 	}
 	
-	void setTimeStamp(Snapshot snapshot) {
+	void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
 	

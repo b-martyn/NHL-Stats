@@ -3,7 +3,7 @@ package connection;
 import connection.DbConnection.Table;
 
 public enum SnapshotsFields implements TableField {
-	ID(1), GAMEID(2), PERIOD(3), ELAPSEDSECONDS(4), SECONDSLEFT(5), HOMEPLAYERSONICE(6), AWAYPLAYERSONICE(7);
+	SNAPSHOTID(1), GAMEID(2), PERIOD(3), ELAPSEDSECONDS(4), SECONDSLEFT(5);
 	
 	private static final Table table = Table.SNAPSHOTS;
 	private int columnNumber;
@@ -11,7 +11,8 @@ public enum SnapshotsFields implements TableField {
 	private SnapshotsFields(int columnNumber){
 		this.columnNumber = columnNumber;
 	}
-	
+
+	@Override
 	public int getColumnNumber(){
 		return columnNumber;
 	}
@@ -24,23 +25,18 @@ public enum SnapshotsFields implements TableField {
 	@Override
 	public FieldType getType() {
 		switch(this){
-			case AWAYPLAYERSONICE:
-				return FieldType.STRING;
-			case ELAPSEDSECONDS:
-				return FieldType.SHORT;
-			case GAMEID:
+			case SNAPSHOTID:
 				return FieldType.INT;
-			case HOMEPLAYERSONICE:
-				return FieldType.STRING;
-			case ID:
+			case GAMEID:
 				return FieldType.INT;
 			case PERIOD:
 				return FieldType.BYTE;
+			case ELAPSEDSECONDS:
+				return FieldType.SHORT;
 			case SECONDSLEFT:
 				return FieldType.SHORT;
 			default:
 				return null;
 		}
 	}
-
 }

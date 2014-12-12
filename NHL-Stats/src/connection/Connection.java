@@ -1,5 +1,6 @@
 package connection;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -24,6 +25,18 @@ public class Connection implements GameConnector, PlayerConnector, PlayerEventCo
 	
 	public static Connection getInstance(){
 		return instance;
+	}
+
+	@Override
+	public RowSetInstructions getDefaultInstructions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResultSet getLoadedResultSet() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -117,18 +130,18 @@ public class Connection implements GameConnector, PlayerConnector, PlayerEventCo
 	}
 
 	@Override
-	public Player[] getPlayers(TeamName teamName) throws SQLException {
-		return playerConnection.getPlayers(teamName);
-	}
-
-	@Override
 	public Player getPlayer(int id) throws SQLException {
 		return playerConnection.getPlayer(id);
 	}
 
 	@Override
-	public Player getPlayer(byte number, TeamName teamName) throws SQLException {
-		return playerConnection.getPlayer(number, teamName);
+	public Player getPlayer(String name) throws SQLException {
+		return playerConnection.getPlayer(name);
+	}
+
+	@Override
+	public Player getPlayer(String firstName, String lastName) throws SQLException {
+		return playerConnection.getPlayer(firstName, lastName);
 	}
 
 	@Override

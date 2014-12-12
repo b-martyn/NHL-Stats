@@ -9,16 +9,28 @@ import javax.sql.rowset.JoinRowSet;
 import javax.sql.rowset.RowSetFactory;
 import javax.sql.rowset.RowSetProvider;
 
+import connection.RowSetInstructions.JoiningResultSet;
+
 final class DbConnection implements DbConnector {
 	
 	public enum Table{
-		GAMES, PLAYERS, SNAPSHOTS, TIMEEVENTS, SHOTS, PLAYEREVENTS;
+		GAMES(6), PLAYERS(5), SNAPSHOTS(5), SNAPSHOTPLAYERS(2), TIMEEVENTS(4), SHOTS(9), SHOTPLAYERS(2), PLAYEREVENTS(7), ROSTERS(4), ROSTERPLAYERS(3);
+		
+		private int size;
+		
+		private Table(int size){
+			this.size = size;
+		}
+		
+		public int getSize(){
+			return size;
+		}
 	}
 	
 	// TODO add db information
 	private static final String USER_NAME = "";
 	private static final String PASSWORD = "";
-	private static final String URL_STRING = "jdbc:mysql://173.48.157.224:3306/nhl";
+	private static final String URL_STRING = "";
 	private CachedRowSet cachedRowSet;
 	
 	DbConnection(Table table) throws SQLException {
@@ -31,39 +43,80 @@ final class DbConnection implements DbConnector {
 	}
 	
 	@Override
-	public ResultSet getResultSet() throws SQLException {
+	public ResultSet getBaseResultSet() throws SQLException {
 		return cachedRowSet;
 	}
 	
 	@Override
-	public ResultSet getResultSet(DbRowSetInstructions instructions) throws SQLException{
-		Object[][] joiningTablesInstructions = instructions.getJoiningTables();
+	public ResultSet getResultSet(RowSetInstructions instructions) throws SQLException{
 		RowSetFactory rowSetFactory = RowSetProvider.newFactory();
+		
+		StringBuilder tables = new StringBuilder();
+		JoiningResultSet[] joiningResultSets = instructions.getJoiningResultSets();
 		JoinRowSet jrs = rowSetFactory.createJoinRowSet();
-		if(joiningTablesInstructions.length > 0){
-			Table[] tables = new Table[joiningTablesInstructions.length];
-			TableField[] newTableField = new TableField[joiningTablesInstructions.length];
-			TableField[] currentTableField = new TableField[joiningTablesInstructions.length];
-			for(int i = 0; i < joiningTablesInstructions.length; i++){
-				tables[i] = (Table)joiningTablesInstructions[i][0];
-				newTableField[i] = (TableField)joiningTablesInstructions[i][1];
-				currentTableField[i] = (TableField)joiningTablesInstructions[i][2];
-			}
-			jrs.addRowSet(cachedRowSet, currentTableField[0].toString().toLowerCase());
-			jrs.addRowSet((CachedRowSet)new DbConnection(tables[0]).getResultSet(), newTableField[0].toString().toLowerCase());
-			for(int i = 1; i < tables.length; i++){
-				JoinRowSet newJrs = rowSetFactory.createJoinRowSet();
-				newJrs.addRowSet(jrs, currentTableField[i].toString().toLowerCase());
-				newJrs.addRowSet((CachedRowSet)new DbConnection(tables[i]).getResultSet(), newTableField[i].toString().toLowerCase());
-				jrs = newJrs;
+		//joins the first field in cachedRowSet for this DbConnection (is the id field)
+		jrs.addRowSet(cachedRowSet, 1);
+		if(cachedRowSet.getMetaData().getTableName(1).equalsIgnoreCase(instructions.getMainTable().toString())){
+			tables.append(instructions.getMainTable() + ",");
+			if(joiningResultSets.length > 0){
+				for(JoiningResultSet joiningResultSet : joiningResultSets){
+					if(!joiningResultSet.isJoiningResultSet()){
+						JoinRowSet tempJRS = rowSetFactory.createJoinRowSet();
+						String tableMatchingField = joiningResultSet.getTableMatchingField();
+						String resultSetMatchingField = joiningResultSet.getResultSetMatchField();
+						tempJRS.addRowSet(jrs, resultSetMatchingField);
+						Table joiningTable = (Table)joiningResultSet.getJoining();
+						tables.append(joiningTable + ",");
+						tempJRS.addRowSet((CachedRowSet)new DbConnection(joiningTable).getBaseResultSet(), tableMatchingField);
+						jrs = tempJRS;
+					}
+				}
+				for(JoiningResultSet joiningResultSet : joiningResultSets){
+					if(joiningResultSet.isJoiningResultSet()){
+						CachedRowSet rowSet = (CachedRowSet)joiningResultSet.getJoining();
+						tables.append(rowSet.getTableName() + ",");
+						String tableMatchingField = joiningResultSet.getTableMatchingField();
+						String resultSetMatchingField = joiningResultSet.getResultSetMatchField();
+						if(joiningResultSet.isJoinAfter()){
+							jrs.addRowSet(rowSet, tableMatchingField);
+						}else{
+							JoinRowSet tempJRS = rowSetFactory.createJoinRowSet();
+							tempJRS.addRowSet(rowSet, tableMatchingField);
+							tempJRS.addRowSet(jrs, resultSetMatchingField);
+							jrs = tempJRS;
+						}
+					}
+				}
 			}
 		}else{
-			jrs.addRowSet(cachedRowSet, "id");
+			throw new IllegalArgumentException("This RowSetInstructions for table: " + instructions.getMainTable().toString() + " does not match this DbConnection for table: " + cachedRowSet.getMetaData().getTableName(1));
 		}
+		
 		FilteredRowSet frs = rowSetFactory.createFilteredRowSet();
 		jrs.beforeFirst();
 		frs.populate(jrs);
 		frs.setFilter(instructions.getMyPredicate());
+		frs.setTableName(tables.toString());
 		return frs;
+	}
+	
+	@Override
+	public int[] getMatchingColumns(ResultSet resultSet, TableField tableField) throws SQLException{
+		int[] matchingColumns = null;
+		for(int i = 0; i < resultSet.getMetaData().getColumnCount(); i++){
+			if(resultSet.getMetaData().getColumnName(i + 1).equalsIgnoreCase(tableField.toString())){
+				if(matchingColumns != null){
+					int[] newArray = new int[matchingColumns.length + 1];
+					for(int j = 0; j < matchingColumns.length; j++){
+						newArray[j] = matchingColumns[j];
+					}
+					newArray[newArray.length - 1] = (i + 1);
+					matchingColumns = newArray;
+				}else{
+					matchingColumns = new int[]{i + 1};
+				}
+			}
+		}
+		return matchingColumns;
 	}
 }

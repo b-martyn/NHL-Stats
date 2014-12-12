@@ -39,11 +39,11 @@ public class TimeEvent {
 		this.starting = starting;
 	}
 	
-	public Snapshot getTimestamp() {
+	public Snapshot getSnapshot() {
 		return snapshot;
 	}
 	
-	public void setTimestamp(Snapshot snapshot) {
+	public void setSnapshot(Snapshot snapshot) {
 		this.snapshot = snapshot;
 	}
 	

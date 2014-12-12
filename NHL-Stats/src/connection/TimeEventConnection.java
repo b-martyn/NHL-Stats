@@ -3,10 +3,14 @@ package connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import connection.DbConnection.Table;
-import connection.DbRowSetInstructions.Comparator;
+import connection.RowSetInstructions.Comparator;
+import connection.Franchise.TeamName;
+import connection.Player.Position;
+import connection.RowSetInstructions.Filter;
 import connection.TimeEvent.TimeEventType;
 
 public class TimeEventConnection implements TimeEventConnector {
@@ -27,29 +31,52 @@ public class TimeEventConnection implements TimeEventConnector {
 	}
 	
 	@Override
+	public RowSetInstructions getDefaultInstructions(){
+		RowSetInstructions instructions = new RowSetInstructions(Table.TIMEEVENTS);
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.SNAPSHOTS, SnapshotsFields.SNAPSHOTID, TimeEventsFields.SNAPSHOTID));
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.GAMES, GamesFields.GAMEID, SnapshotsFields.GAMEID));
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.SNAPSHOTPLAYERS,SnapshotPlayersFields.SNAPSHOTID, SnapshotsFields.SNAPSHOTID));
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.PLAYERS,PlayersFields.PLAYERID, SnapshotPlayersFields.SNAPSHOTPLAYERID));
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.ROSTERPLAYERS, RosterPlayersFields.ROSTERPLAYERID, SnapshotPlayersFields.SNAPSHOTPLAYERID));
+		instructions.addJoiningResultSet(instructions.new JoiningResultSet(Table.ROSTERS, RostersFields.ROSTERID, RosterPlayersFields.ROSTERID));
+		return instructions;
+	}
+	
+	@Override
+	public ResultSet getLoadedResultSet() throws SQLException{
+		return connection.getResultSet(getDefaultInstructions());
+	}
+	
+	@Override
 	public TimeEvent[] getTimeEvents() throws SQLException {
-		return convertTimeEvents(connection.getResultSet());
+		return convertTimeEvents(getLoadedResultSet());
 	}
 
 	@Override
 	public TimeEvent[] getTimeEvents(Game game) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.TIMEEVENTS);
-		instructions.addJoiningTable(Table.SNAPSHOTS, SnapshotsFields.ID, TimeEventsFields.SNAPSHOTID);
-		instructions.addNewFilterCriteria(SnapshotsFields.GAMEID, Comparator.EQUAL, game.getId());
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(SnapshotsFields.GAMEID, Comparator.EQUAL, game.getId());
+		instructions.addFilter(filter);
+		filter = instructions.new Filter(GamesFields.DATE, Comparator.EQUAL, new java.sql.Date(game.getDate().getTime()));
+		filter.filterAdditionField(GamesFields.HOMETEAM, Comparator.EQUAL, game.getHomeTeam(), true);
+		filter.filterAdditionField(GamesFields.AWAYTEAM, Comparator.EQUAL, game.getAwayTeam(), true);
+		instructions.addFilter(filter);
 		return convertTimeEvents(connection.getResultSet(instructions));
 	}
 
 	@Override
 	public TimeEvent[] getTimeEvents(TimeEventType type) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.TIMEEVENTS);
-		instructions.addNewFilterCriteria(TimeEventsFields.TIMEEVENTTYPE, Comparator.EQUAL, type.toString());
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(TimeEventsFields.TIMEEVENTTYPE, Comparator.EQUAL, type.toString());
+		instructions.addFilter(filter);
 		return convertTimeEvents(connection.getResultSet(instructions));
 	}
 
 	@Override
 	public TimeEvent getTimeEvent(int id) throws SQLException {
-		DbRowSetInstructions instructions = new DbRowSetInstructions(Table.TIMEEVENTS);
-		instructions.addNewFilterCriteria(TimeEventsFields.ID, Comparator.EQUAL, id);
+		RowSetInstructions instructions = getDefaultInstructions();
+		Filter filter = instructions.new Filter(TimeEventsFields.TIMEEVENTID, Comparator.EQUAL, id);
+		instructions.addFilter(filter);
 		try{
 			return convertTimeEvents(connection.getResultSet(instructions))[0];
 		}catch(ArrayIndexOutOfBoundsException e){
@@ -59,15 +86,48 @@ public class TimeEventConnection implements TimeEventConnector {
 	
 	private TimeEvent[] convertTimeEvents(ResultSet resultSet) throws SQLException{
 		List<TimeEvent> timeEvents = new ArrayList<TimeEvent>();
-		
+		TimeEvent timeEvent = null;
+		int timeEventId = 0;
 		resultSet.beforeFirst();
 		while(resultSet.next()){
-			int id = resultSet.getInt(TimeEventsFields.ID.toString().toLowerCase());
-			boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
-			Snapshot snapshot = SnapshotConnection.getInstance().getSnapshot(resultSet.getInt(TimeEventsFields.SNAPSHOTID.toString().toLowerCase()));
-			TimeEventType type = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
-			timeEvents.add(new TimeEvent(id, starting, snapshot, type));
+			int playerId = resultSet.getInt(PlayersFields.PLAYERID.toString().toLowerCase());
+			String firstName = resultSet.getString(PlayersFields.FIRSTNAME.toString().toLowerCase());
+			String lastName = resultSet.getString(PlayersFields.LASTNAME.toString().toLowerCase());
+			Position position = Position.valueOf(resultSet.getString(PlayersFields.POSITION.toString().toLowerCase()));
+			if((resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase())) == timeEventId){
+				if(timeEvent.getSnapshot().getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+					timeEvent.getSnapshot().addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
+				}else{
+					timeEvent.getSnapshot().addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
+				}
+			}else{
+				if(timeEvent != null){
+					timeEvents.add(timeEvent);
+				}
+				int gameId = resultSet.getInt(GamesFields.GAMEID.toString().toLowerCase());
+				Date date = resultSet.getDate(GamesFields.DATE.toString().toLowerCase());
+				TeamName homeTeam = TeamName.valueOf(resultSet.getString(GamesFields.HOMETEAM.toString().toLowerCase()));
+				TeamName awayTeam = TeamName.valueOf(resultSet.getString(GamesFields.AWAYTEAM.toString().toLowerCase()));
+				byte homeScore = resultSet.getByte(GamesFields.HOMESCORE.toString().toLowerCase());
+				byte awayScore = resultSet.getByte(GamesFields.AWAYSCORE.toString().toLowerCase());
+				int snapshotId = resultSet.getInt(SnapshotsFields.SNAPSHOTID.toString().toLowerCase());
+				byte period = resultSet.getByte(SnapshotsFields.PERIOD.toString().toLowerCase());
+				short elapsedSeconds = resultSet.getShort(SnapshotsFields.ELAPSEDSECONDS.toString().toLowerCase());
+				short secondsLeft = resultSet.getShort(SnapshotsFields.SECONDSLEFT.toString().toLowerCase());
+				timeEventId = resultSet.getInt(TimeEventsFields.TIMEEVENTID.toString().toLowerCase());
+				boolean starting = resultSet.getBoolean(TimeEventsFields.STARTINGCLOCK.toString().toLowerCase());
+				TimeEventType type = TimeEventType.valueOf(resultSet.getString(TimeEventsFields.TIMEEVENTTYPE.toString().toLowerCase()));
+				timeEvent = new TimeEvent(timeEventId, starting, new Snapshot(snapshotId, new Game(gameId, date, homeTeam, awayTeam, homeScore, awayScore), new TimeStamp(period, elapsedSeconds, secondsLeft)), type);
+				
+				if(timeEvent.getSnapshot().getGame().getHomeTeam().equals(TeamName.valueOf(resultSet.getString(RostersFields.TEAM.toString().toLowerCase())))){
+					timeEvent.getSnapshot().addHomePlayerOnIce(new Player(playerId, firstName, lastName, position));
+				}else{
+					timeEvent.getSnapshot().addAwayPlayerOnIce(new Player(playerId, firstName, lastName, position));
+				}
+			}
 		}
+		timeEvents.add(timeEvent);
+		
 		return timeEvents.toArray(new TimeEvent[timeEvents.size()]);
 	}
 }

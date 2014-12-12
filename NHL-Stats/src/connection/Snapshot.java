@@ -5,22 +5,20 @@ import java.util.Arrays;
 public class Snapshot {
 	
 	private int id;
-	private int gameId;
+	private Game game;
 	private TimeStamp timeStamp;
-	private Player[] homePlayersOnIce;
-	private Player[] awayPlayersOnIce;
+	private Player[] homePlayersOnIce = new Player[0];
+	private Player[] awayPlayersOnIce = new Player[0];
 	
-	public Snapshot(int id, int gameId, TimeStamp timeStamp, Player[] homePlayersOnIce, Player[] awayPlayersOnIce) {
+	public Snapshot(int id, Game game, TimeStamp timeStamp) {
 		super();
 		this.id = id;
-		this.gameId = gameId;
+		this.game = game;
 		this.timeStamp = timeStamp;
-		this.homePlayersOnIce = homePlayersOnIce;
-		this.awayPlayersOnIce = awayPlayersOnIce;
 	}
 	
-	public Snapshot(int gameId, TimeStamp timeStamp, Player[] homePlayersOnIce, Player[] awayPlayersOnIce) {
-		this(0, gameId, timeStamp, homePlayersOnIce, awayPlayersOnIce);
+	public Snapshot(Game game, TimeStamp timeStamp) {
+		this(0, game, timeStamp);
 	}
 	
 	public int getId() {
@@ -31,12 +29,12 @@ public class Snapshot {
 		this.id = id;
 	}
 	
-	public int getGameId() {
-		return gameId;
+	public Game getGame() {
+		return game;
 	}
 	
-	void setGameId(int gameId) {
-		this.gameId = gameId;
+	void setGame(Game gameId) {
+		this.game = gameId;
 	}
 	
 	public TimeStamp getTimeStamp() {
@@ -51,21 +49,31 @@ public class Snapshot {
 		return homePlayersOnIce;
 	}
 	
-	void setHomePlayersOnIce(Player[] homePlayersOnIce) {
-		this.homePlayersOnIce = homePlayersOnIce;
+	public void addHomePlayerOnIce(Player player){
+		Player[] newPlayerArray = new Player[homePlayersOnIce.length + 1];
+		for(int i = 0; i < homePlayersOnIce.length; i++){
+			newPlayerArray[i] = homePlayersOnIce[i];
+		}
+		newPlayerArray[newPlayerArray.length - 1] = player;
+		homePlayersOnIce = newPlayerArray;
 	}
 	
-	public Player[] getHwayPlayersOnIce() {
+	public Player[] getAwayPlayersOnIce() {
 		return awayPlayersOnIce;
 	}
 	
-	void setAwayPlayersOnIce(Player[] awayPlayersOnIce) {
-		this.awayPlayersOnIce = awayPlayersOnIce;
+	public void addAwayPlayerOnIce(Player player){
+		Player[] newPlayerArray = new Player[awayPlayersOnIce.length + 1];
+		for(int i = 0; i < awayPlayersOnIce.length; i++){
+			newPlayerArray[i] = awayPlayersOnIce[i];
+		}
+		newPlayerArray[newPlayerArray.length - 1] = player;
+		awayPlayersOnIce = newPlayerArray;
 	}
 
 	@Override
 	public String toString() {
-		return "Snapshot [id=" + id + ", gameId=" + gameId + ", timeStamp="
+		return "Snapshot [id=" + id + ", game=" + game.getId() + ", timeStamp="
 				+ timeStamp + ", homePlayersOnIce="
 				+ Arrays.toString(homePlayersOnIce) + ", awayPlayersOnIce="
 				+ Arrays.toString(awayPlayersOnIce) + "]";
