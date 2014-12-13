@@ -74,4 +74,57 @@ public class PlayerEvent {
 		return "PlayerEvent [id=" + id + ", player=" + player + ", snapshot="
 				+ snapshot + ", zone=" + zone + ", type=" + type + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((player == null) ? 0 : player.hashCode());
+		result = prime * result	+ ((snapshot == null) ? 0 : snapshot.hashCode());
+		if(type == null){
+			result = prime * result;
+		}else{
+			for(char character : type.toString().toCharArray()){
+				result = prime * result + character;
+			}
+		}
+		if(zone == null){
+			result = prime * result;
+		}else{
+			for(char character : zone.toString().toCharArray()){
+				result = prime * result + character;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		PlayerEvent other = (PlayerEvent) obj;
+		if (player == null) {
+			if (other.player != null)
+				return false;
+		} else if (!player.equals(other.player)){
+			return false;
+		}
+		if (snapshot == null) {
+			if (other.snapshot != null){
+				return false;
+			}
+		} else if (!snapshot.equals(other.snapshot)){
+			return false;
+		}
+		if (type != other.type || zone != other.zone){
+			return false;
+		}
+		
+		return true;
+	}
 }

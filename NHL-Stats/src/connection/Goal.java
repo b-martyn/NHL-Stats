@@ -58,4 +58,46 @@ public class Goal extends Shot {
 	public String toString() {
 		return "Goal [assist1=" + assist1 + ", assist2=" + assist2 + "]" + super.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (((assist1 == null) ? 0 : assist1.hashCode()) + ((assist2 == null) ? 0 : assist2.hashCode()));
+		//result = prime * result + ((assist2 == null) ? 0 : assist2.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj) || getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		Goal other = (Goal) obj;
+		if (assist1 == null) {
+			if (other.assist1 != null){
+				return false;
+			}
+		}
+		if (assist2 == null) {
+			if (other.assist2 != null){
+				return false;
+			}
+		}else if(!assist1.equals(other.getAssist1()) && !assist1.equals(other.getAssist2())){
+			return false;
+		}else if(!assist2.equals(other.getAssist1()) && !assist2.equals(other.getAssist2())){
+			return false;
+		}
+		if(assist1 != null && assist2 == null){
+			if(!assist1.equals(other.assist2)){
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

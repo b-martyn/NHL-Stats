@@ -58,12 +58,26 @@ public class Player {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (o instanceof Player) {
-			Player compare = (Player) o;
-			if (firstName.equals(compare.getFirstName())
-					&& lastName.equals(compare.getLastName())
-					&& position.equals(compare.getPosition())){
+	public String toString() {
+		return "Player [id=" + id + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", position=" + position + "]";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (obj instanceof Player) {
+			Player compare = (Player) obj;
+			if (firstName.equals(compare.getFirstName()) && lastName.equals(compare.getLastName())){
+				if (position == null) {
+					if (compare.getPosition() != null){
+						return false;
+					}
+				} else if (!position.equals(compare.getPosition())){
+					return false;
+				}
 				return true;
 			}
 		}
@@ -76,13 +90,7 @@ public class Player {
 		int hash = 7;
 		hash *= firstName.length();
 		hash *= lastName.length();
-		hash *= position.toString().length();
+		hash *= ((position == null) ? 0 : position.toString().length());
 		return hash;
-	}
-
-	@Override
-	public String toString() {
-		return "Player [id=" + id + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", position=" + position + "]";
 	}
 }

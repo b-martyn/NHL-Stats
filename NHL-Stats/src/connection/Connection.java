@@ -9,22 +9,24 @@ import connection.PlayerEvent.PlayerEventType;
 import connection.Shot.ShotType;
 import connection.TimeEvent.TimeEventType;
 
-public class Connection implements GameConnector, PlayerConnector, PlayerEventConnector, ShotConnector, TimeEventConnector, SnapshotConnector{
+public class Connection implements GameConnector, PlayerConnector, PlayerEventConnector, ShotConnector, TimeEventConnector, SnapshotConnector, RostersConnector{
 	
-	private static Connection instance = new Connection();
+	private static GameConnection gameConnection;
+	private static PlayerConnection playerConnection;
+	private static PlayerEventConnection playerEventConnection;
+	private static ShotConnection shotConnection;
+	private static TimeEventConnection timeEventConnection;
+	private static SnapshotConnection snapshotConnection;
+	private static RostersConnection rostersConnection;
 	
-	private static GameConnection gameConnection = GameConnection.getInstance();
-	private static PlayerConnection playerConnection = PlayerConnection.getInstance();
-	private static PlayerEventConnection playerEventConnection = PlayerEventConnection.getInstance();
-	private static ShotConnection shotConnection = ShotConnection.getInstance();
-	private static TimeEventConnection timeEventConnection = TimeEventConnection.getInstance();
-	private static SnapshotConnection snapshotConnection = SnapshotConnection.getInstance();
-	
-	private Connection(){
-	}
-	
-	public static Connection getInstance(){
-		return instance;
+	public Connection(){
+		gameConnection = GameConnection.getInstance();
+		playerConnection = PlayerConnection.getInstance();
+		playerEventConnection = PlayerEventConnection.getInstance();
+		shotConnection = ShotConnection.getInstance();
+		timeEventConnection = TimeEventConnection.getInstance();
+		snapshotConnection = SnapshotConnection.getInstance();
+		rostersConnection = RostersConnection.getInstance();
 	}
 
 	@Override
@@ -167,5 +169,25 @@ public class Connection implements GameConnector, PlayerConnector, PlayerEventCo
 	@Override
 	public Game getGame(Date date, TeamName teamName) throws SQLException {
 		return gameConnection.getGame(date, teamName);
+	}
+
+	@Override
+	public Roster[] getRosters() throws SQLException {
+		return rostersConnection.getRosters();
+	}
+
+	@Override
+	public Roster[] getRosters(Game game) throws SQLException {
+		return rostersConnection.getRosters(game);
+	}
+
+	@Override
+	public Roster[] getRosters(TeamName teamName) throws SQLException {
+		return rostersConnection.getRosters(teamName);
+	}
+
+	@Override
+	public Roster getRoster(TeamName teamName, Date date) throws SQLException {
+		return rostersConnection.getRoster(teamName, date);
 	}
 }

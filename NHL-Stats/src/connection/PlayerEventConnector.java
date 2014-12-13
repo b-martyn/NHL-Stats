@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import connection.PlayerEvent.PlayerEventType;
 
-interface PlayerEventConnector extends TableConnector{
+public interface PlayerEventConnector extends TableConnector{
 	PlayerEvent[] getPlayerEvents() throws SQLException;
 	PlayerEvent[] getPlayerEvents(Player player) throws SQLException;
 	PlayerEvent[] getPlayerEvents(Game game) throws SQLException;

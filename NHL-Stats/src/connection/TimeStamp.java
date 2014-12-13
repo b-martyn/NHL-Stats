@@ -47,5 +47,30 @@ public class TimeStamp {
 		return "TimeStamp [period=" + period + ", elapsedSeconds="
 				+ elapsedSeconds + ", secondsLeft=" + secondsLeft + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + elapsedSeconds;
+		result = prime * result + period;
+		result = prime * result + secondsLeft;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj)
+			return true;
+		
+		TimeStamp other = (TimeStamp) obj;
+		if (elapsedSeconds != other.elapsedSeconds || period != other.period || secondsLeft != other.secondsLeft){
+			return false;
+		}
+		return true;
+	}
 	
 }

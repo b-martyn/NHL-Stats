@@ -60,15 +60,14 @@ public class Franchise {
 	}
 	
 	@Override
-	public boolean equals(Object o){
-		if(o instanceof Franchise){
-			Franchise compareingFranchise = (Franchise) o;
-			if(compareingFranchise.getProvince().equals(this.province)
-					&& compareingFranchise.getTeamName().equals(this.teamName)
-					&& compareingFranchise.getBaseColor().equals(this.baseColor)
-					&& compareingFranchise.getMainColor().equals(this.mainColor)
-					&& compareingFranchise.getSecondaryColor().equals(this.secondaryColor)){
-				return true;
+	public boolean equals(Object obj){
+		if(obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if(obj instanceof Franchise){
+			Franchise compareingFranchise = (Franchise) obj;
+			if(!compareingFranchise.getTeamName().equals(this.teamName)){
+				return false;
 			}
 		}
 		return false;
@@ -76,13 +75,12 @@ public class Franchise {
 	
 	@Override
 	public int hashCode(){
-		int hash = 7;
-		hash *= province.length();
-		hash *= teamName.toString().length();
-		hash *= (baseColor.getBlue() + baseColor.getRed() + baseColor.getRed() + 1);
-		hash *= (mainColor.getBlue() + mainColor.getRed() + mainColor.getRed() + 1);
-		hash *= (secondaryColor.getBlue() + secondaryColor.getRed() + secondaryColor.getRed() + 1);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		for(char character : teamName.toString().toCharArray()){
+			result = prime * result + character;
+		}
+		return result;
 	}
 	
 	private void pickColors(TeamName teamName) {

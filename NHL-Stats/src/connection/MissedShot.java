@@ -33,4 +33,35 @@ public class MissedShot extends Shot {
 	public String toString() {
 		return "MissedShot [missedLocation=" + missedLocation + "]" + super.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		if(missedLocation == null){
+			result = prime * result;
+		}else{
+			for(char character : missedLocation.toString().toCharArray()){
+				result = prime * result + character;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj) || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		MissedShot other = (MissedShot) obj;
+		if (missedLocation != other.missedLocation){
+			return false;
+		}
+		
+		return true;
+	}
 }

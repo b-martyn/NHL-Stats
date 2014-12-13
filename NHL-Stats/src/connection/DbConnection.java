@@ -28,9 +28,9 @@ final class DbConnection implements DbConnector {
 	}
 	*/
 	// TODO add db information
-	private static final String USER_NAME = "root";
-	private static final String PASSWORD = "root";
-	private static final String URL_STRING = "jdbc:mysql://173.48.157.224:3306/nhl";
+	private static final String USER_NAME = "";
+	private static final String PASSWORD = "";
+	private static final String URL_STRING = "";
 	private CachedRowSet cachedRowSet;
 	
 	DbConnection(Table table) throws SQLException {

@@ -1,5 +1,8 @@
 package connection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Snapshot {
 	
 	private int id;
@@ -21,7 +24,7 @@ public class Snapshot {
 	public Snapshot(){
 		this(0, 0, null);
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -78,5 +81,90 @@ public class Snapshot {
 				+ timeStamp + ", homePlayersOnIce="
 				+ homePlayersOnIce.length + ", awayPlayersOnIce="
 				+ awayPlayersOnIce.length + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if(homePlayersOnIce.length > 0){
+			int partResult = 1;
+			for(Player player : homePlayersOnIce){
+				partResult += ((player == null) ? 0 : player.hashCode());
+			}
+			result = prime * result + partResult;
+		}
+		if(awayPlayersOnIce.length > 0){
+			int partResult = 1;
+			for(Player player : awayPlayersOnIce){
+				partResult += ((player == null) ? 0 : player.hashCode());
+			}
+			result = prime * result + partResult;
+		}
+		result = prime * result + gameId;
+		result = prime * result	+ ((timeStamp == null) ? 0 : timeStamp.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		Snapshot other = (Snapshot) obj;
+		if(homePlayersOnIce.length == other.homePlayersOnIce.length && awayPlayersOnIce.length == other.awayPlayersOnIce.length){
+			List<Player> otherHomePlayers = new ArrayList<Player>();
+			for(Player player : other.homePlayersOnIce){
+				otherHomePlayers.add(player);
+			}
+			for(Player myPlayer : homePlayersOnIce){
+				boolean playersResult = false;
+				for(Player otherPlayer : otherHomePlayers){
+					if(myPlayer.equals(otherPlayer)){
+						playersResult = true;
+						break;
+					}
+				}
+				if(!playersResult){
+					return false;
+				}else{
+					otherHomePlayers.remove(myPlayer);
+				}
+			}
+			List<Player> otherAwayPlayers = new ArrayList<Player>();
+			for(Player player : other.awayPlayersOnIce){
+				otherAwayPlayers.add(player);
+			}
+			for(Player myPlayer : awayPlayersOnIce){
+				boolean playersResult = false;
+				for(Player otherPlayer : otherAwayPlayers){
+					if(myPlayer.equals(otherPlayer)){
+						playersResult = true;
+						break;
+					}
+				}
+				if(!playersResult){
+					return false;
+				}else{
+					otherAwayPlayers.remove(myPlayer);
+				}
+			}
+		}else{
+			return false;
+		}
+		if (gameId != other.gameId){
+			return false;
+		}else if (timeStamp == null) {
+			if (other.timeStamp != null){
+				return false;
+			}
+		} else if (!timeStamp.equals(other.timeStamp)){
+			return false;
+		}
+		return true;
 	}
 }

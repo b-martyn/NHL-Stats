@@ -2,7 +2,7 @@ package connection;
 
 import connection.DbConnector.Table;
 
-interface TableField {
+public interface TableField {
 	enum FieldType{
 		BYTE, SHORT, INT, DATE, STRING, BOOLEAN;
 	}

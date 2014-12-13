@@ -75,4 +75,49 @@ public class Shot {
 				+ distanceOut + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + distanceOut;
+		result = prime * result + ((player == null) ? 0 : player.hashCode());
+		result = prime * result	+ ((snapshot == null) ? 0 : snapshot.hashCode());
+		if(shotType == null){
+			result = prime * result;
+		}else{
+			for(char character : shotType.toString().toCharArray()){
+				result = prime * result + character;
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null || this.getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		Shot other = (Shot) obj;
+		if (player == null){
+			if (other.player != null)
+				return false;
+		} else if (!player.equals(other.player))
+			return false;
+		if (snapshot == null){
+			if (other.snapshot != null){
+				return false;
+			}
+		} else if (!snapshot.equals(other.snapshot)){
+			return false;
+		}
+		if (shotType != other.shotType || distanceOut != other.distanceOut){
+			return false;
+		}
+		
+		return true;
+	}
 }

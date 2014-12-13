@@ -30,4 +30,29 @@ public class ShootoutShot extends Shot {
 	public String toString() {
 		return "ShootoutShot [goal=" + goal + "]" + super.toString();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (goal ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj) || getClass() != obj.getClass()){
+			return false;
+		}
+		if (this == obj){
+			return true;
+		}
+		
+		ShootoutShot other = (ShootoutShot) obj;
+		if (goal != other.goal){
+			return false;
+		}
+		
+		return true;
+	}
 }
