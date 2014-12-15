@@ -3,7 +3,7 @@ package connection;
 import connection.DbConnector.Table;
 
 public enum PlayersFields implements TableField {
-	PLAYERID(1), ACTIVE(2), FIRSTNAME(3), LASTNAME(4), POSITION(5);
+	PLAYERID(1), FIRSTNAME(2), LASTNAME(3), POSITION(4);
 
 	private static final Table table = Table.PLAYERS;
 	private int columnNumber;
@@ -25,8 +25,6 @@ public enum PlayersFields implements TableField {
 	@Override
 	public FieldType getType() {
 		switch (this){
-			case ACTIVE:
-				return FieldType.BOOLEAN;
 			case FIRSTNAME:
 				return FieldType.STRING;
 			case PLAYERID:

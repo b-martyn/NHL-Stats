@@ -6,7 +6,10 @@ import connection.DbConnector.Table;
 
 public class DbConnectorFactory {
 	public DbConnector getDbConnector(Table table) throws SQLException{
-		DbConnection connection = new DbConnection(table);
-		return connection;
+		if(table != null){
+			DbConnection connection = new DbConnection(table);
+			return connection;
+		}
+		return null;
 	}
 }

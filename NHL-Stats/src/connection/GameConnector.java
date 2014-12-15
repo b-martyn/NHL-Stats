@@ -23,7 +23,9 @@ public interface GameConnector extends TableConnector{
 				this.startDate = new SimpleDateFormat("yyyy-MM-dd").parse(dates[0]);
 				this.endDate = new SimpleDateFormat("yyyy-MM-dd").parse(dates[1]);
 			} catch (ParseException e) {
-				// Do nothing (Season _2004_2005 was a lockout-season and no dates so can't parse date
+				//endDate is before startDate.  This is for season 2004-2005 which was a lockout season.
+				this.startDate = new Date();
+				this.endDate = new Date(startDate.getTime() - (24 * 60 * 60 * 1000));
 				//e.printStackTrace();
 			}
 		}

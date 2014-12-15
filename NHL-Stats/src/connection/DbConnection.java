@@ -12,21 +12,6 @@ import javax.sql.rowset.RowSetProvider;
 import connection.RowSetInstructions.JoiningResultSet;
 
 final class DbConnection implements DbConnector {
-	/*
-	public enum Table{
-		GAMES(6), PLAYERS(5), SNAPSHOTS(5), SNAPSHOTPLAYERS(2), TIMEEVENTS(4), SHOTS(9), SHOTPLAYERS(2), PLAYEREVENTS(7), ROSTERS(4), ROSTERPLAYERS(3);
-		
-		private int size;
-		
-		private Table(int size){
-			this.size = size;
-		}
-		
-		public int getSize(){
-			return size;
-		}
-	}
-	*/
 	// TODO add db information
 	private static final String USER_NAME = "";
 	private static final String PASSWORD = "";

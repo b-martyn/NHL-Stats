@@ -180,10 +180,9 @@ public class GameConnection implements GameConnector {
 						if(shot instanceof BlockedShot){
 							//Do nothing, just a repeat of information
 						}else{
-							int shotPlayerIdIndex = resultSet.findColumn(ShotPlayersFields.SHOTPLAYERID.toString().toLowerCase());
-							String shotPlayerFirstName = resultSet.getString(shotPlayerIdIndex + 2);
-							String shotPlayerLastName = resultSet.getString(shotPlayerIdIndex + 3);
-							Position shotPlayerPosition = Position.valueOf(resultSet.getString(shotPlayerIdIndex + 4));
+							String shotPlayerFirstName = resultSet.getString(firstNameColumns[1]);
+							String shotPlayerLastName = resultSet.getString(lastNameColumns[1]);
+							Position shotPlayerPosition = Position.valueOf(resultSet.getString(positionColumns[1]));
 							Player shotPlayer = new Player(secondShotPlayerId, shotPlayerFirstName, shotPlayerLastName, shotPlayerPosition);
 							if(shot instanceof Goal){
 								Goal goal = (Goal)shot;
